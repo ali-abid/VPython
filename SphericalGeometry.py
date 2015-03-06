@@ -12,13 +12,31 @@
 
 # And possibly to come:
 # --finding the distance between two points given in spherical coordinates, with visual interpretation
-
 from __future__ import print_function, division
 from visual import *
 import numpy as np
 import math as m
+import csv
+
+# Reading x y z coordinates from csv file
+file = open('C:\Dev\workspace\VPython/xyz30round3direction.csv')
+reader = csv.reader(file)
+#reading x y z values from csv file
+Xnum = []
+Ynum = []
+Znum = []
+# storing x y and z values into arrays
+for line in reader:
+    Xnum.append(line[1]),Ynum.append(line[2]),Znum.append(line[3])
+#Test case
+#for i in range(len(Xnum)-1):
+#    print(Xnum[i])
+
+
+    
 
 sphericalGraph = display(title = "Spherical Graph", x=0, y=0, width=450, height=500, forward=(-1,-1,-1), up=(0,0,1))
+
 
 # define the keys to press for each function
 expand = 'r'
@@ -144,7 +162,13 @@ def updatePhi(p):
     updateLines(pt)
     updatePhiGUI(p)
 
+
 ### MAIN LOOP ###
+for i in range(len(Xnum)-1):
+    updateRho(rho)
+    updateRho(rho)
+    updateTheta(theta)
+
 
 while 1:
     rate(50)
@@ -170,3 +194,6 @@ while 1:
     elif press == decPhi:
         phi -= pi/36
         updatePhi(phi) #decrease phi
+
+
+file.close()
