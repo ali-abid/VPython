@@ -50,6 +50,10 @@ decPhi = 's'
 rho = 5
 theta = pi/3 #radians
 phi = pi/4 #radians
+x = 0
+y = 0
+z = 0
+
 xAxis = arrow(pos = (0,0,0), axis = (1,0,0), color = (1,0,0), length = rho + 1, shaftwidth = 0.1, fixedwidth = True)
 yAxis = arrow(pos = (0,0,0), axis = (0,1,0), color = (0,1,0), length = rho + 1, shaftwidth = 0.1, fixedwidth = True)
 zAxis = arrow(pos = (0,0,0), axis = (0,0,1), color = (0,0,1), length = rho + 1, shaftwidth = 0.1, fixedwidth = True)
@@ -73,6 +77,11 @@ def cart2sph(x,y,z):
 # place the point initially with the given coordinates
 pt = points(pos = [sphToCart(rho, theta, phi)], size = 15, color = color.white)
 ball = sphere(pos = (0,0,0), opacity = 0.3, radius = rho)
+
+#Added ball2 for Cartesian to Spherical
+pt2 = points(pos = [cart2sph(x, y, z)], size = 15, color = color.blue)
+ball2 = sphere(pos = (0,0,0), opacity = 0.3, radius = rho)
+
 
 ### MAKING LINES ###
 
@@ -162,12 +171,26 @@ def updatePhi(p):
     updateLines(pt)
     updatePhiGUI(p)
 
+def updateX(x1):
+    ball2.radius = x1
+    pt2.pos[0] = cart2sph(x1,y,z)
+    
+def updateY(y1):
+    ball2.radius = y1
+    pt2.pos[0] = cart2sph(x,y1,z)
+    
+def updateZ(z1):
+    ball2.radius = z1
+    pt2.pos[0] = cart2sph(x,y,z1)
+
+
 
 ### MAIN LOOP ###
 for i in range(len(Xnum)-1):
-    updateRho(rho)
-    updateRho(rho)
-    updateTheta(theta)
+    rate(10)
+    updateX(float(Xnum[i]))
+    updateY(float(Ynum[i]))
+    updateZ(float(Znum[i]))
 
 
 while 1:
