@@ -19,7 +19,7 @@ import math as m
 import csv
 
 # Reading x y z coordinates from csv file
-file = open('C:\Dev\workspace\VPython/xyz30round3direction.csv')
+file = open('C:\Dev\workspace\VPython/xyz50round.csv')
 reader = csv.reader(file)
 #reading x y z values from csv file
 Xnum = []
@@ -174,20 +174,24 @@ def updatePhi(p):
 def updateX(x1):
     ball2.radius = x1
     pt2.pos[0] = cart2sph(x1,y,z)
+    updateLines(pt2) #Update Line 
     
 def updateY(y1):
     ball2.radius = y1
     pt2.pos[0] = cart2sph(x,y1,z)
+    updateLines(pt2) #Update Line
     
 def updateZ(z1):
     ball2.radius = z1
     pt2.pos[0] = cart2sph(x,y,z1)
+    updateLines(pt2) #Update Line
 
 
 
 ### MAIN LOOP ###
+#updating x y z value and moving position rho theta and phi
 for i in range(len(Xnum)-1):
-    rate(10)
+    rate(40)
     updateX(float(Xnum[i]))
     updateY(float(Ynum[i]))
     updateZ(float(Znum[i]))
