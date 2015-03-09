@@ -17,9 +17,14 @@ from visual import *
 import numpy as np
 import math as m
 import csv
+#Set background graph parameters
+scene.background = color.black
+scene.width = 400
+scene.height = 400
+scene.forward = vector(-.5,-.3,-1)
 
 # Reading x y z coordinates from csv file
-file = open('C:\Dev\workspace\VPython/xyz50round.csv')
+file = open('C:\Dev\workspace\VPython/seesaw.csv')
 reader = csv.reader(file)
 #reading x y z values from csv file
 Xnum = []
@@ -33,9 +38,7 @@ for line in reader:
 #    print(Xnum[i])
 
 
-    
-
-sphericalGraph = display(title = "Spherical Graph", x=0, y=0, width=450, height=500, forward=(-1,-1,-1), up=(0,0,1))
+sphericalGraph = display(title = "Spherical Graph", x=0, y=0, width=450, height=500, forward=(-1,-1,-1), up=(0,1,0))
 
 
 # define the keys to press for each function
@@ -61,13 +64,17 @@ xLabel = label(pos = (rho,0,0), text = "X", box = False, color = color.red)
 yLabel = label(pos = (0,rho,0), text = "Y", box = False, color = color.green)
 zLabel = label(pos = (0,0,rho), text = "Z", box = False, color = color.cyan)
 
+#Convert Spherical to Cartesian
 def sphToCart(rho, theta, phi):
     x = rho * sin(phi) * cos(theta)
     y = rho * sin(phi) * sin(theta)
     z = rho * cos(phi)
     return (x,y,z)
-
+#Convert Cartesian to Spherical
 def cart2sph(x,y,z):
+    x = float(x)
+    y = float(y)
+    z = float(z)
     XsqPlusYsq = x**2 + y**2
     r = m.sqrt(XsqPlusYsq + z**2)               # r
     elev = m.atan2(z,m.sqrt(XsqPlusYsq))     # theta
@@ -78,10 +85,9 @@ def cart2sph(x,y,z):
 pt = points(pos = [sphToCart(rho, theta, phi)], size = 15, color = color.white)
 ball = sphere(pos = (0,0,0), opacity = 0.3, radius = rho)
 
-#Added ball2 for Cartesian to Spherical
-pt2 = points(pos = [cart2sph(x, y, z)], size = 15, color = color.blue)
-ball2 = sphere(pos = (0,0,0), opacity = 0.3, radius = rho)
-
+#Creating ball sphere
+pt2 = points(pos = [cart2sph(x,y,z)], size = 15, color = color.white)
+ball2 = sphere(pos = vector(0,0,0), radius = 0.3, color=color.blue)
 
 ### MAKING LINES ###
 
@@ -171,30 +177,18 @@ def updatePhi(p):
     updateLines(pt)
     updatePhiGUI(p)
 
-def updateX(x1):
-    ball2.radius = x1
-    pt2.pos[0] = cart2sph(x1,y,z)
-    updateLines(pt2) #Update Line 
-    
-def updateY(y1):
-    ball2.radius = y1
-    pt2.pos[0] = cart2sph(x,y1,z)
-    updateLines(pt2) #Update Line
-    
-def updateZ(z1):
-    ball2.radius = z1
-    pt2.pos[0] = cart2sph(x,y,z1)
-    updateLines(pt2) #Update Line
-
-
+#Updatin XYZ coordinates and convert into Spherical rho, theta , phi
+def updateXYZ(x,y,z):
+  ball2.pos = vector(cart2sph(x,y,z))
+  pt2.pos[0] = cart2sph(x,y,z)
+  updateLines(pt2) #Update Line
 
 ### MAIN LOOP ###
+  
 #updating x y z value and moving position rho theta and phi
 for i in range(len(Xnum)-1):
-    rate(40)
-    updateX(float(Xnum[i]))
-    updateY(float(Ynum[i]))
-    updateZ(float(Znum[i]))
+    rate(10)
+    updateXYZ(Xnum[i],Ynum[i],Znum[i])
 
 
 while 1:
