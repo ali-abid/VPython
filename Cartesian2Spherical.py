@@ -19,7 +19,7 @@ t= 0
 deltaT = 0.07
 
 # Reading x y z coordinates from csv file
-file = open('C:\Dev\workspace\VPython/xyz36round.csv')
+file = open('C:\Dev\workspace\VPython/1roundtop.csv')
 reader = csv.reader(file)
 #reading x y z values from csv file
 Xnum = []
@@ -75,12 +75,12 @@ def updateXYZ(x,y,z):
 ### MAIN LOOP ###
 #updating x y z value and moving position rho theta and phi
 for i in range(len(Xnum)-1):
-    rate(10)
+    rate(5)
     updateXYZ(Xnum[i],Ynum[i],Znum[i])
     
 #Reading values from Xnum[], Ynum[], Znum[] arrays and move ball positions  
 for i in range(len(Xnum)-1):
-    rate(10) 
+    rate(5) 
     ball2.velocity = vector(float(Xnum[i]),float(Ynum[i]),float(Znum[i]))*vscale
     r.pos= ball2.velocity*vscale  #Draw arrow along ball velocity
     r.axis = ball2.pos
