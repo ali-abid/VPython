@@ -1,4 +1,4 @@
-# Represend velocity vector in 3D
+# Represent velocity vector in 3D
 # Version 1.0 (Feb, 2015).
 # Abid Ali,
 # IMaR Gateway Technology, Institute of Technology Tralee

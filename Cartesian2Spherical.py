@@ -88,6 +88,8 @@ for i in range(len(Xnum)-1):
     ball2.color = color.red
     ball2.pos = ball2.pos + ball2.velocity*deltaT     #Update ball position 
     ball2.trail.append(pos=ball2.pos)     #Draw trail along ball movement
+    t = t + deltaT # final time is equal to initial time plus delta time.
+    
     
 
     
