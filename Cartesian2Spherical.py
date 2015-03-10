@@ -19,7 +19,7 @@ t= 0
 deltaT = 0.07
 
 # Reading x y z coordinates from csv file
-file = open('C:\Dev\workspace\VPython/1roundtop.csv')
+file = open('C:\Dev\workspace\VPython/xyz30round3direction.csv')
 reader = csv.reader(file)
 #reading x y z values from csv file
 Xnum = []
