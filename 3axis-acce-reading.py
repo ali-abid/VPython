@@ -10,6 +10,8 @@ import numpy as np
 import math as m
 import csv
 
+PI = math.pi
+DEG = PI/180
 scene.x = 0
 scene.y = 0
 scene.width = 600
@@ -39,11 +41,47 @@ calibrate=vector(0,0,0)
 accX = []
 accY = []
 accZ = []
-file = open('C:\Dev\workspace\VPython/xyztwist2.csv')
+file = open('C:\Dev\workspace\VPython/xyz36round.csv')
 reader = csv.reader(file)
 for line in reader:
     accX.append(line[1]),accY.append(line[2]),accZ.append(line[3])
 
+#Acceleration function
+def acc(t,x,v):
+    radiusvect=x
+    r=mag(radiusvect)
+    rhat=radiusvect/r
+    mag_a=mag2(v)/r
+    return vector(-mag_a*rhat.x,-mag_a*rhat.y,0)
+#define box
+b1color = color.red
+block_height=0.25
+tracklength=2 #track
+track = box(pos=(tracklength/2,-0.05,0), axis=(1,0,0), length=tracklength, height=.1, width=2, color=color.orange)
+c=[] #tick mark on track
+for x in arange(tracklength):
+    cu = curve(z = arange(-1,2,1), color=(0.25,0.25,1.0))
+    c.append(cu)
+    c[x].y = 0.01
+    c[x].x = x
+
+pos_init=vector(0,0,0) # setup (do not edit these components)
+vel_init=vector(1,2,2) 
+pos_init.y=0. ; pos_init.z=0 # setup initial POSITIONS (sit on track)
+block = box(pos=pos_init, axis=track.axis,
+        length=block_height, height=block_height, width=block_height, color=b1color)
+block.vel = vel_init 
+
+
+
+
+
+
+
+for i in range(len(accX)-1):
+    rate(20)
+    myArrow.axis=vector(float(accX[i]),float(accY[i]),float(accZ[i]))-calibrate
+    
 
 file.close()
 
