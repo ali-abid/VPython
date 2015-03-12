@@ -18,4 +18,13 @@ scene.autoscale = 0
 scene.title = "3 axis accelro reading"
 scene.range = (2,2,2)
 
+#create arrows
+myArrow = arrow(axis=(1,0,0), fixedwidth=1, shaftwidth=0.1)
+arrow(color=color.red, axis=(1,0,0), shaftwidth=0.01, fixedwidth=1)
+arrow(color=color.green, axis=(0,1,0), shaftwidth=0.01, fixedwidth=1)
+arrow(color=color.blue, axis=(0,0,1), shaftwidth=0.01, fixedwidth=1)
+#arrow title
+xLabel = label(pos = (1,0,0), text = "X", box = False, color = color.red)
+yLabel = label(pos = (0,1,0), text = "Y", box = False, color = color.green)
+zLabel = label(pos = (0,0,1), text = "Z", box = False, color = color.blue)
 
