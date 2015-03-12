@@ -35,5 +35,16 @@ scene.up=vector(0,0,1)
 scene.forward=vector(0+1,1,0-.2)
 calibrate=vector(0,0,0)
 
+#Reading x y and z data from file
+accX = []
+accY = []
+accZ = []
+file = open('C:\Dev\workspace\VPython/xyztwist2.csv')
+reader = csv.reader(file)
+for line in reader:
+    accX.append(line[1]),accY.append(line[2]),accZ.append(line[3])
+
+
+file.close()
 
 
