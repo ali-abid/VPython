@@ -28,3 +28,12 @@ xLabel = label(pos = (1,0,0), text = "X", box = False, color = color.red)
 yLabel = label(pos = (0,1,0), text = "Y", box = False, color = color.green)
 zLabel = label(pos = (0,0,1), text = "Z", box = False, color = color.blue)
 
+#adjest arrow setting
+scene.autoscale=0
+scene.eye=vector(0-1,10,0+.2)
+scene.up=vector(0,0,1)
+scene.forward=vector(0+1,1,0-.2)
+calibrate=vector(0,0,0)
+
+
+
