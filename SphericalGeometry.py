@@ -24,7 +24,7 @@ scene.height = 400
 scene.forward = vector(-.5,-.3,-1)
 
 # Reading x y z coordinates from csv file
-file = open('C:\Dev\workspace\VPython/seesaw.csv')
+file = open('C:\Dev\workspace\VPython/xyz36round.csv')
 reader = csv.reader(file)
 #reading x y z values from csv file
 Xnum = []
