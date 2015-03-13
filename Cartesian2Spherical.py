@@ -52,8 +52,8 @@ def cart2sph(x,y,z):
     z = float(z)
     XsqPlusYsq = x**2 + y**2
     r = m.sqrt(XsqPlusYsq + z**2)#r
-    elev = m.atan2(z,m.sqrt(XsqPlusYsq))#theta
-    az = m.atan2(y,x)#phi
+    elev = m.atan2(z,m.sqrt(r))#phi
+    az = m.atan2(y,x)#theta
     return r, elev, az
 
 
