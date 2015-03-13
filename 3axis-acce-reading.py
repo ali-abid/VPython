@@ -32,9 +32,9 @@ zLabel = label(pos = (0,0,1), text = "Z", box = False, color = color.blue)
 
 #adjest arrow setting
 scene.autoscale=0
-scene.eye=vector(0-1,10,0+.2)
-scene.up=vector(0,0,1)
-scene.forward=vector(0+1,1,0-.2)
+scene.eye=vector(0,0,0)
+scene.up=vector(0,1,0)
+#scene.forward=vector(0,0,0)
 calibrate=vector(0,0,0)
 
 #Reading x y and z data from file
@@ -79,7 +79,7 @@ block.vel = vel_init
 
 
 for i in range(len(accX)-1):
-    rate(20)
+    rate(5)
     myArrow.axis=vector(float(accX[i]),float(accY[i]),float(accZ[i]))-calibrate
     
 
