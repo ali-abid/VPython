@@ -8,6 +8,7 @@ from visual import *
 import numpy as np
 import math as m
 import csv
+from visual.graph import *
 
 sphericalGraph = display(title = "Cartesian to Spherical Conversion", x=0, y=0, width=450, height=500, forward=(-1,-1,-1), up=(0,1,0))
 
@@ -75,22 +76,37 @@ def updateXYZ(x,y,z):
 ### MAIN LOOP ###
 #updating x y z value and moving position rho theta and phi
 for i in range(len(Xnum)-1):
-    rate(50)
+    #rate(50)
     updateXYZ(Xnum[i],Ynum[i],Znum[i])
+
+b1color=color.blue   
+BW=0
+if BW==0:
+    fgcolor=color.black; bgcolor=color.white
+else:
+    fgcolor=color.white; bgcolor=color.black
     
+posx_graph = gdisplay(x=0, y=000, width=500, height=300, 
+             title='x-Position vs. Time', xtitle='t(s)', ytitle='x (m)', 
+             xmax=100, xmin=0., ymax=50, ymin=0, 
+             foreground=fgcolor, background=bgcolor)
+
+
 #Reading values from Xnum[], Ynum[], Znum[] arrays and move ball positions  
 for i in range(len(Xnum)-1):
-    rate(20) 
+    rate(100)
+    x = Xnum[i]
     ball2.velocity = vector(float(Xnum[i]),float(Ynum[i]),float(Znum[i]))*vscale
-    r.pos= ball2.velocity*vscale  #Draw arrow along ball velocity
-    r.axis = ball2.pos
-    ra = arrow(pos= ball2.pos, axis = ball2.velocity*vscale, color=color.yellow)
-    ball2.color = color.red
-    ball2.pos = ball2.pos + ball2.velocity*deltaT     #Update ball position 
-    ball2.trail.append(pos=ball2.pos)     #Draw trail along ball movement
+    ball2.pos += ball2.pos + ball2.velocity*deltaT
+    print(i, ball2.pos.x)
+    posx_Plot = gcurve(color=b1color)
+    posx_Plot.plot(pos=(t,ball2.x))
+    scene.center=ball2.pos #keep block in view
     t = t + deltaT # final time is equal to initial time plus delta time.
-    
-    
+        
 
+f1 = gcurve(color=color.cyan)	# a graphics curve
+#for x in arange(0, 8.05, 0.1):	# x goes from 0 to 8
+f1.plot(pos=(100,30))# plot
     
 file.close()
