@@ -9,6 +9,7 @@ from random import *
 import numpy as np
 import math as m
 import csv
+from visual.graph import *
 
 PI = math.pi
 DEG = PI/180
@@ -45,8 +46,28 @@ reader = csv.reader(file)
 for line in reader:
     accX.append(line[1]),accY.append(line[2]),accZ.append(line[3])
 
+#Graph
+fgcolor=color.white
+bgcolor=color.black
+b1color=color.red
+posx_graph = gdisplay(x=0, y=000, width=250, height=150, 
+             title='x-Position vs. Time', xtitle='t(s)', ytitle='x (m)', 
+             xmax=50, xmin=0., ymax=30, ymin=-10, 
+             foreground=fgcolor, background=bgcolor)
+posx_Plot = gcurve(color=b1color)
+
+#Calculate speed of x y x corrdinates distance per second
 
 
+
+#Calculate velocity of deltaX delataY and deltaZ displacement per second 
+
+#Calculate Accecleration of deltaVelocity of x y and z per second square
+
+#plot graphs
+
+
+    
 file.close()
 
 
