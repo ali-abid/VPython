@@ -46,6 +46,7 @@ reader = csv.reader(file)
 for line in reader:
     accX.append(line[1]),accY.append(line[2]),accZ.append(line[3])
 
+<<<<<<< HEAD
 #Graph
 fgcolor=color.white
 bgcolor=color.black
@@ -68,6 +69,10 @@ posx_Plot = gcurve(color=b1color)
 
 
     
+=======
+
+
+>>>>>>> 737b130626bb18d733e6758a454b0f57d2fa6e4d
 file.close()
 
 
