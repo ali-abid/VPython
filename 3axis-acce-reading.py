@@ -76,14 +76,30 @@ acc_graph = gdisplay(x=0, y=400, width=250, height=200,
              foreground=fgcolor, background=bgcolor)
 acc_Plot = gcurve(color=color.yellow)
 
+PI=math.pi
+DEG=PI/180
 
-
+ball.vel = vector(1.0*cos(70*DEG),1.0*sin(70*DEG),0)
 time = 0
 dt = 0.07
 g = 0.1
 def acc(t,x,v):
-    return vector(0.,-g,0.)
+    radiusvect = x
+    r = mag(radiusvect)
+    rhat = radiusvect/r
+    mag_a = mag2(v)/r
+    return vector(-mag_a*rhat.x,-mag_a*rhat.y,0)
     
+def cart2sph(x,y,z):
+    x = float(x)
+    y = float(y)
+    z = float(z)
+    XsqPlusYsq = x**2 + y**2
+    r = m.sqrt(XsqPlusYsq + z**2)#r
+    elev = m.atan2(z,m.sqrt(r))#phi
+    az = m.atan2(y,x)#theta
+    return r, elev, az
+
 
 def updateXYZ(x,y,z):
     x = float(x)
@@ -94,7 +110,6 @@ def updateXYZ(x,y,z):
     a  = acc(time,ball.pos,ball.vel)
     ball.acc = a
     ball.vel += ball.acc*dt
-
 
 for i in range(len(Xnum)-1):
     rate(10)
@@ -111,7 +126,7 @@ for i in range(len(Xnum)-1):
     acc_Plot.plot(pos=(time,mag(ball.acc)))
     time = time + dt
     #x speed
-    print(ball.pos.x/time)
+    print(ball.pos.z)
     scene.center=ball.pos-vector(0,1,0) #keep ball in view
     
 
