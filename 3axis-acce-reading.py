@@ -53,16 +53,37 @@ for line in reader:
 vscale = 0.1
 
 #Graph
+colorx = color.red
+colory = color.green
+colorz = color.blue
 fgcolor=color.white
 bgcolor=color.black
-b1color=color.red
 posx_graph = gdisplay(x=0, y=000, width=250, height=150, 
              title='x-Position vs. Time', xtitle='t(s)', ytitle='x (m)', 
              xmax=50, xmin=0., ymax=30, ymin=-10, 
              foreground=fgcolor, background=bgcolor)
-posx_Plot = gcurve(color=b1color)
+posx_Plot = gcurve(color=colorx)
+
+velx_graph = gdisplay(x=0, y=150, width=250, height=150, 
+             title='x-Velocity vs. Time', xtitle='t(s)', ytitle='vx (m/s)', 
+             xmax=50., xmin=0., ymax=30, ymin=-2, 
+             foreground=fgcolor, background=bgcolor)
+velx_Plot = gcurve(color=colorx)
+
+acc_graph = gdisplay(x=0, y=400, width=250, height=200, 
+             title='Acceleration vs. Time', xtitle='t(s)', ytitle='a (m/s^2)', 
+             xmax=40, xmin=0., ymax=2, ymin=0, 
+             foreground=fgcolor, background=bgcolor)
+acc_Plot = gcurve(color=color.yellow)
+
+
+
 time = 0
 dt = 0.07
+g = 0.1
+def acc(t,x,v):
+    return vector(0.,-g,0.)
+    
 
 def updateXYZ(x,y,z):
     x = float(x)
@@ -70,25 +91,32 @@ def updateXYZ(x,y,z):
     z = float(z)
     ball.vel = vector(x,y,z)*vscale
     ball.pos += ball.vel*dt
+    a  = acc(time,ball.pos,ball.vel)
+    ball.acc = a
+    ball.vel += ball.acc*dt
 
-#Calculate speed of x y x corrdinates distance per second
-#x speed
+
 for i in range(len(Xnum)-1):
     rate(10)
     updateXYZ(Xnum[i],Ynum[i],Znum[i])
     arrow(pos=ball.pos,axis=ball.vel/2.*vscale,color=color.yellow,fixedwidth = 1)
-    arrow(pos=ball.pos,axis=(ball.vel.x/2.*vscale,0,0),color=color.red,fixedwidth = 1)
-    arrow(pos=ball.pos,axis=(0,ball.vel.y/2.*vscale,0),color=color.green,fixedwidth = 1)
-    arrow(pos=ball.pos,axis=(0,0,ball.vel.z/2.*vscale),color=color.blue,fixedwidth = 1)
+    arrow(pos=ball.pos,axis=(ball.vel.x/2.*vscale,0,0),color=colorx,fixedwidth = 1)
+    arrow(pos=ball.pos,axis=(0,ball.vel.y/2.*vscale,0),color=colory,fixedwidth = 1)
+    arrow(pos=ball.pos,axis=(0,0,ball.vel.z/2.*vscale),color=colorz,fixedwidth = 1)
+#Calculate speed of x y x corrdinates distance per second
     posx_Plot.plot(pos=(time,ball.pos.x))
+#Calculate velocity of deltaX delataY and deltaZ displacement per second
+    velx_Plot.plot(pos=(time,ball.vel.x))
+#Calculate Accecleration of deltaVelocity of x y and z per second square
+    acc_Plot.plot(pos=(time,mag(ball.acc)))
     time = time + dt
+    #x speed
     print(ball.pos.x/time)
     scene.center=ball.pos-vector(0,1,0) #keep ball in view
     
-#Calculate velocity of deltaX delataY and deltaZ displacement per second
 
 
-#Calculate Accecleration of deltaVelocity of x y and z per second square
+
 
 #plot graphs
 
