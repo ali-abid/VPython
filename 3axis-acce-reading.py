@@ -59,8 +59,8 @@ colorz = color.blue
 fgcolor=color.white
 bgcolor=color.black
 velx_graph = gdisplay(x=0, y=150, width=250, height=150, 
-             title='x-Velocity vs. Time', xtitle='t(s)', ytitle='vx (m/s)', 
-             xmax=50., xmin=0., ymax=0.1, ymin=-.1, 
+             title='Position and Acce vs. Time', xtitle='t(s)', ytitle='vx (m/s)', 
+             xmax=50., xmin=0., ymax=30, ymin=0, 
              foreground=fgcolor, background=bgcolor)
 velx_Plot = gcurve(color=colorx)
 velx_Plot2 = gcurve(color=color.green)
@@ -69,7 +69,7 @@ PI=math.pi
 DEG=PI/180
 
 ball.vel = vector(1.0*cos(70*DEG),1.0*sin(70*DEG),0)
-time = 0
+time = 0.1
 dt = 0.07
 g = 0.1
 def acc(t,x,v):
@@ -129,12 +129,25 @@ def updateXYZ(x,y,z):
     ball.acc = a
     ball.vel += ball.acc*dt
     
-    
+#Position and Acceleration graph comparision
+def posANDacc(x,y,z):
+    x = float(x)
+    y = float(y)
+    z = float(z)
+    ball.vel = vector(x,y,z)*vscale
+    a = acc(time,ball.pos,ball.vel)
+    print(ball.vel)
+    ball.acc = a
+    ball.pos += ball.vel*dt
+    ball.vel += ball.acc*dt
+    velx_Plot.plot(pos=(time,mag(ball.pos)))
+    velx_Plot2.plot(pos=(time,mag(ball.acc)))
+
 
 for i in range(len(Xnum)-1):
     rate(50)
 # This function calculate velocity and position of x y and z coordinates
-    updateVel(Xnum[i],Ynum[i],Znum[i])
+    posANDacc(Xnum[i],Ynum[i],Znum[i])
     scene.center=ball.pos-vector(0,1,0) #keep ball in view
     time = time + dt
 
