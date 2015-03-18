@@ -22,7 +22,7 @@ scene.title = "3 axis accelro reading"
 scene.range = (2,2,2)
 
 #Create ball sphere
-ball = sphere(pos = vector(0,0,0), radius = 0.3, color=color.blue)
+ball = sphere(pos = vector(1,1,1), radius = 0.3, color=color.blue)
 
 #create arrows
 #myArrow = arrow(axis=(1,0,0), fixedwidth=1, shaftwidth=0.1)
@@ -58,23 +58,12 @@ colory = color.green
 colorz = color.blue
 fgcolor=color.white
 bgcolor=color.black
-posx_graph = gdisplay(x=0, y=000, width=250, height=150, 
-             title='x-Position vs. Time', xtitle='t(s)', ytitle='x (m)', 
-             xmax=50, xmin=0., ymax=30, ymin=-10, 
-             foreground=fgcolor, background=bgcolor)
-posx_Plot = gcurve(color=colorx)
-
 velx_graph = gdisplay(x=0, y=150, width=250, height=150, 
              title='x-Velocity vs. Time', xtitle='t(s)', ytitle='vx (m/s)', 
-             xmax=50., xmin=0., ymax=30, ymin=-2, 
+             xmax=50., xmin=0., ymax=0.1, ymin=-.1, 
              foreground=fgcolor, background=bgcolor)
 velx_Plot = gcurve(color=colorx)
-
-acc_graph = gdisplay(x=0, y=400, width=250, height=200, 
-             title='Acceleration vs. Time', xtitle='t(s)', ytitle='a (m/s^2)', 
-             xmax=40, xmin=0., ymax=2, ymin=0, 
-             foreground=fgcolor, background=bgcolor)
-acc_Plot = gcurve(color=color.yellow)
+velx_Plot2 = gcurve(color=color.green)
 
 PI=math.pi
 DEG=PI/180
@@ -101,6 +90,35 @@ def cart2sph(x,y,z):
     return r, elev, az
 
 
+#// velocity
+#vx += ((ax + ax0)/2) * (t - t0);
+#vy += ((ay + ay0)/2) * (t - t0);
+#vz += ((az + az0)/2) * (t - t0);
+#// position;
+#px += ((vx + vx0)/2) * (t - t0);
+#py += ((vy + vy0)/2) * (t - t0);
+#pz += ((vz + vz0)/2) * (t - t0);
+def updateVel(x,y,z):
+    vx = 0
+    vx0 = 0
+    ax0 = 0
+    px = 0
+    x = float(x)
+    y = float(y)
+    z = float(z)
+    ball.vel = vector(x,y,z)*vscale
+    a = acc(time, ball.pos, ball.vel)
+    ax = a.x
+    # Velocity of x
+    vx += ((ax + ax0)/2) * (dt)
+    ax0 = ax
+    #Positin of x
+    px += ((vx + vx0)/2) * (dt)
+    vx0 = vx
+    velx_Plot.plot(pos=(time,vx))
+    velx_Plot2.plot(pos=(time,px))
+    print(dt)
+    
 def updateXYZ(x,y,z):
     x = float(x)
     y = float(y)
@@ -110,30 +128,15 @@ def updateXYZ(x,y,z):
     a  = acc(time,ball.pos,ball.vel)
     ball.acc = a
     ball.vel += ball.acc*dt
-
-for i in range(len(Xnum)-1):
-    rate(10)
-    updateXYZ(Xnum[i],Ynum[i],Znum[i])
-    arrow(pos=ball.pos,axis=ball.vel/2.*vscale,color=color.yellow,fixedwidth = 1)
-    arrow(pos=ball.pos,axis=(ball.vel.x/2.*vscale,0,0),color=colorx,fixedwidth = 1)
-    arrow(pos=ball.pos,axis=(0,ball.vel.y/2.*vscale,0),color=colory,fixedwidth = 1)
-    arrow(pos=ball.pos,axis=(0,0,ball.vel.z/2.*vscale),color=colorz,fixedwidth = 1)
-#Calculate speed of x y x corrdinates distance per second
-    posx_Plot.plot(pos=(time,ball.pos.x))
-#Calculate velocity of deltaX delataY and deltaZ displacement per second
-    velx_Plot.plot(pos=(time,ball.vel.x))
-#Calculate Accecleration of deltaVelocity of x y and z per second square
-    acc_Plot.plot(pos=(time,mag(ball.acc)))
-    time = time + dt
-    #x speed
-    print(ball.pos.z)
-    scene.center=ball.pos-vector(0,1,0) #keep ball in view
+    
     
 
-
-
-
-#plot graphs
+for i in range(len(Xnum)-1):
+    rate(50)
+# This function calculate velocity and position of x y and z coordinates
+    updateVel(Xnum[i],Ynum[i],Znum[i])
+    scene.center=ball.pos-vector(0,1,0) #keep ball in view
+    time = time + dt
 
 
     
