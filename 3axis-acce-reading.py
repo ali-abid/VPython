@@ -23,7 +23,8 @@ scene.range = (2,2,2)
 
 #Create ball sphere
 ball = sphere(pos = vector(1,1,1), radius = 0.3, color=color.blue)
-
+#Creae ball trail
+ball.trail = curve(color=ball.color)
 #create arrows
 #myArrow = arrow(axis=(1,0,0), fixedwidth=1, shaftwidth=0.1)
 arrow(color=color.red, axis=(1,0,0), shaftwidth=0.01, fixedwidth=1)
@@ -50,7 +51,7 @@ for line in reader:
     Xnum.append(line[1]),Ynum.append(line[2]),Znum.append(line[3])
 
 # Vector scale
-vscale = 0.1
+vscale = 0.01
 
 #Graph
 colorx = color.red
@@ -58,12 +59,27 @@ colory = color.green
 colorz = color.blue
 fgcolor=color.white
 bgcolor=color.black
-velx_graph = gdisplay(x=0, y=150, width=250, height=150, 
-             title='Position and Acce vs. Time', xtitle='t(s)', ytitle='vx (m/s)', 
-             xmax=50., xmin=0., ymax=30, ymin=0, 
+b1color = color.red
+b2color = color.green
+#Position graph
+pos_graph = gdisplay(x=0, y=000, width=250, height=200, 
+             title='Position vs. Time', xtitle='t(s)', ytitle='x (m)', 
+             xmax=40., xmin=0., ymax=20, ymin=0, 
              foreground=fgcolor, background=bgcolor)
-velx_Plot = gcurve(color=colorx)
-velx_Plot2 = gcurve(color=color.green)
+pos_Plot = gcurve(color=b1color)
+#Velocity graph
+vel_graph = gdisplay(x=0, y=200, width=250, height=200, 
+             title='Velocity vs. Time', xtitle='t(s)', ytitle='v (m/s)', 
+             xmax=40., xmin=0., ymax=0.5, ymin=-0.5, 
+             foreground=fgcolor, background=bgcolor)
+vel_Plot = gcurve(color=b1color)
+vel2_Plot = gcurve(color=b2color)
+#Acceleration graph
+acc_graph = gdisplay(x=0, y=400, width=250, height=200, 
+             title='Acceleration vs. Time', xtitle='t(s)', ytitle='a (m/s^2)', 
+             xmax=40., xmin=0., ymax=0.1, ymin=-0.1, 
+             foreground=fgcolor, background=bgcolor)
+acc_Plot = gcurve(color=b2color)
 
 PI=math.pi
 DEG=PI/180
@@ -128,6 +144,11 @@ def updateXYZ(x,y,z):
     a  = acc(time,ball.pos,ball.vel)
     ball.acc = a
     ball.vel += ball.acc*dt
+
+def updateCar2spe(x,y,z):
+    ball.pos = vector(cart2sph(x,y,z))
+    #Draw trail along ball movement
+    ball.trail.append(pos=ball.pos)
     
 #Position and Acceleration graph comparision
 def posANDacc(x,y,z):
@@ -135,22 +156,24 @@ def posANDacc(x,y,z):
     y = float(y)
     z = float(z)
     ball.vel = vector(x,y,z)*vscale
+    pos_Plot.plot(pos=(time,mag(ball.pos)))
+    print(ball.pos)
     a = acc(time,ball.pos,ball.vel)
-    print(ball.vel)
     ball.acc = a
     ball.pos += ball.vel*dt
     ball.vel += ball.acc*dt
-    velx_Plot.plot(pos=(time,mag(ball.pos)))
-    velx_Plot2.plot(pos=(time,mag(ball.acc)))
-
+    vel_Plot.plot(pos=(time,mag(ball.vel)))
+    acc_Plot.plot(pos=(time,mag(ball.acc)))
+    
 
 for i in range(len(Xnum)-1):
-    rate(50)
+    rate(5)
 # This function calculate velocity and position of x y and z coordinates
+    updateCar2spe(Xnum[i],Ynum[i],Znum[i])
     posANDacc(Xnum[i],Ynum[i],Znum[i])
     scene.center=ball.pos-vector(0,1,0) #keep ball in view
     time = time + dt
-
+    #print(time)
 
     
 file.close()
