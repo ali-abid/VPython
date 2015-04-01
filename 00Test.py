@@ -44,11 +44,13 @@ scene.up=vector(0,1,0)
 Xnum = []
 Ynum = []
 Znum = []
-file = open('C:\Dev\workspace\VPython/testgolf-1-14-58.csv')
+file = open('C:\Dev\workspace\VPython/testgolf-1-14-58.csv', 'rU')
 reader = csv.reader(file)
 for line in reader:
-    Xnum.append(line[1]),Ynum.append(line[2]),Znum.append(line[3])
-
+    #Xnum.append(line[1]),Ynum.append(line[2]),Znum.append(line[3]
+    #x,y,z = line.split(',')
+    print(line)
+    
 # Vector scale
 vscale = 0.1
 
