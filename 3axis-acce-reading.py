@@ -22,16 +22,21 @@ scene.title = "3 axis accelro reading"
 scene.range = (2,2,2)
 
 # Vector scale
-vscale = 0.1
+vscale = 0.2
 #Create ball sphere
-ball = sphere(pos = vector(1,1,1), radius = 0.3, color=color.blue)
+ball = ellipsoid(pos = vector(1,1,0), lenth = 0.5, width = 1, height= 0.5, color=color.white)
+#mybox = box(pos=(1,1,1), length=0.1, height=0.1, width=4)
+ball2 = sphere(pos = vector(1,1,0), radius = 0.3, color=color.blue)
+#ball2 = ellipsoid(pos = vector(1,1,1), length= 0.5, height=0.5, width=1.5, color=color.white)
 #Creae ball trail
 ball.trail = curve(color=ball.color)
+ball2.trail = curve(color=ball.color)
 #create arrows
 ball.vel = vector(5,10,0)
 #Velocity vector arrow
 #Create vector arrow
 r = arrow(pos=vector(0,0,0), axis = vector(0,0,0), color=color.white, shaftwidth=0.1)
+r2 = arrow(pos=vector(0,0,0), axis = vector(0,0,0), color=color.white, shaftwidth=0.1)
 
 
 #myArrow = arrow(axis=(1,0,0), fixedwidth=1, shaftwidth=0.1)
@@ -53,7 +58,7 @@ scene.up=vector(0,1,0)
 Xnum = []
 Ynum = []
 Znum = []
-file = open('C:\Dev\workspace\VPython/2round.csv')
+file = open('C:\Dev\workspace\VPython/xyz36round.csv')
 reader = csv.reader(file)
 for line in reader:
     Xnum.append(line[1]),Ynum.append(line[2]),Znum.append(line[3])
@@ -153,9 +158,9 @@ def updateXYZ(x,y,z):
     ball.vel += ball.acc*dt
 
 def updateCar2spe(x,y,z):
-    ball.pos = vector(cart2sph(x,y,z))
+    ball2.pos = vector(cart2sph(x,y,z))
     #Draw trail along ball movement
-    ball.trail.append(pos=vector(ball.pos.x,ball.pos.y,ball.pos.z))
+    ball2.trail.append(pos=vector(ball2.pos.x,ball2.pos.y,ball2.pos.z))
     
 #Position and Acceleration graph comparision
 def posANDacc(x,y,z):
@@ -173,9 +178,14 @@ def posANDacc(x,y,z):
 
 def vectorVelocity(x,y,z):
     ball.vel = vector(float(Xnum[i]),float(Ynum[i]),float(Znum[i]))*vscale
-    r = arrow(pos= ball.pos, axis = ball.vel*vscale, color=color.yellow)
-    ball.color = color.red
-    ball.pos = ball.pos + ball.vel*dt     #Update ball position 
+    ball2.vel = vector(float(Xnum[i]),float(Ynum[i]),float(Znum[i]))*vscale
+    #mybox.vel = vector(float(Xnum[i]),float(Ynum[i]),float(Znum[i]))*vscale
+    r2 = arrow(pos= ball2.pos, axis = ball2.vel*vscale, color=color.yellow)
+    #r = arrow(pos= ball.pos, axis = ball.vel*vscale, color=color.yellow)
+    ball.pos = ball.pos + ball.vel*dt     #Update ball position
+    ball2.pos = ball2.pos + ball2.vel*dt     #Update ball position
+    #mybox.pos = mybox.pos + mybox.vel*dt     #Update ball position
+   
     
 for i in range(len(Xnum)-1):
     rate(5)
@@ -183,14 +193,14 @@ for i in range(len(Xnum)-1):
     posANDacc(Xnum[i],Ynum[i],Znum[i])
     vectorVelocity(Xnum[i],Ynum[i],Znum[i])
     #updateCar2spe(Xnum[i],Ynum[i],Znum[i])
-    scene.center=ball.pos-vector(0,1,0) #keep ball in view
+    #scene.center=ball.pos-vector(0,1,0) #keep ball in view
     time = time + dt
     #print(time)
 for i in range(len(Xnum)-1):
-    rate(5)
-    updateCar2spe(Xnum[i],Ynum[i],Znum[i])
-    scene.center=ball.pos-vector(0,1,0) #keep ball in view
-    time = time + dt
+   rate(5)
+   updateCar2spe(Xnum[i],Ynum[i],Znum[i])
+   scene.center=ball.pos-vector(0,1,0) #keep ball in view
+   time = time + dt
 file.close()
 
 
