@@ -9,6 +9,7 @@ from random import *
 import numpy as np
 import math as m
 import csv
+import re
 from visual.graph import *
 
 PI = math.pi
@@ -39,6 +40,8 @@ scene.autoscale=0
 scene.eye=vector(0,0,0)
 scene.up=vector(0,1,0)
 
+s = "Hello"
+print(s[0])
 
 #Reading x y and z data from file
 Xnum = []
@@ -47,10 +50,15 @@ Znum = []
 file = open('C:\Dev\workspace\VPython/testgolf-1-14-58.csv', 'rU')
 reader = csv.reader(file)
 for line in reader:
-    #Xnum.append(line[1]),Ynum.append(line[2]),Znum.append(line[3]
-    #x,y,z = line.split(',')
-    print(line)
+    reader.next() # This function make space in line
+    Xnum.append(line[1]),Ynum.append(line[2]),Znum.append(line[3])
+    #Xnum.append(line[1])
+    #print(line[1])  
     
+
+for i in range(len(Xnum)-1):
+    print(Ynum[i])
+
 # Vector scale
 vscale = 0.1
 
