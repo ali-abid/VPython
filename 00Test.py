@@ -40,24 +40,31 @@ scene.autoscale=0
 scene.eye=vector(0,0,0)
 scene.up=vector(0,1,0)
 
-s = "Hello"
-print(s[0])
 
 #Reading x y and z data from file
 Xnum = []
 Ynum = []
 Znum = []
-file = open('C:\Dev\workspace\VPython/testgolf-1-14-58.csv', 'rU')
+file = open('C:\Dev\workspace\VPython/golf-1-14-58.txt', 'rU')
 reader = csv.reader(file)
 for line in reader:
     reader.next() # This function make space in line
     Xnum.append(line[1]),Ynum.append(line[2]),Znum.append(line[3])
     #Xnum.append(line[1])
-    #print(line[1])  
-    
+    #print(line[0], line[6])  
 
+def convertADCtoDecimal(x,y,z):
+    Adcx = float(x)
+    Adcy = float(y)
+    Adcz = float(z)
+    Vx = Adcx * 3.3/65535       #AdcX * RefVoltage/ 2^16 -1
+    Vy = Adcy * 3.3/65635
+    Vz = Adcz * 3.3/65635
+    print(Vx,Vy,Vz)
+    
 for i in range(len(Xnum)-1):
-    print(Ynum[i])
+    convertADCtoDecimal(Xnum[i],Ynum[i],Znum[i])
+    
 
 # Vector scale
 vscale = 0.1
@@ -148,7 +155,7 @@ def posANDacc(x,y,z):
     z = float(z)
     ball.vel = vector(x,y,z)*vscale
     a = acc(time,ball.pos,ball.vel)
-    print(ball.vel)
+    #print(ball.vel)
     ball.acc = a
     ball.pos += ball.vel*dt
     ball.vel += ball.acc*dt
