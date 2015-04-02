@@ -63,9 +63,17 @@ def convertADCtoDecimal(x,y,z):
     print(Vx,Vy,Vz)
     
 for i in range(len(Xnum)-1):
-    convertADCtoDecimal(Xnum[i],Ynum[i],Znum[i])
+    Adcx = float(Xnum[i])
+    Adcy = float(Ynum[i])
+    Adcz = float(Znum[i])
+    Vx = Adcx * 3.3/65535       #AdcX * RefVoltage/ 2^16 -1
+    Vy = Adcy * 3.3/65635
+    Vz = Adcz * 3.3/65635
+    Xnum[i] = Vx
+    Ynum[i] = Vy
+    Znum[i] = Vz
+    print(Xnum[i],Ynum[i],Znum[i])
     
-
 # Vector scale
 vscale = 0.1
 
@@ -79,7 +87,7 @@ bgcolor=color.black
 #Velocity graph
 vel_graph = gdisplay(x=0, y=200, width=250, height=200, 
              title='Velocity vs. Time', xtitle='t(s)', ytitle='v (m/s)', 
-             xmax=50, xmin=0., ymax=10, ymin=0, 
+             xmax=100, xmin=0., ymax=10, ymin=0, 
              foreground=fgcolor, background=bgcolor)
 vel_Plot = gcurve(color=colory)
 
@@ -87,7 +95,7 @@ vel_Plot = gcurve(color=colory)
 #Acceleration graph
 acc_graph = gdisplay(x=0, y=400, width=250, height=200, 
              title='Acceleration vs. Time', xtitle='t(s)', ytitle='a (m/s^2)', 
-             xmax=50, xmin=0., ymax=1, ymin=-1, 
+             xmax=100, xmin=0., ymax=1, ymin=-1, 
              foreground=fgcolor, background=bgcolor)
 acc_Plot = gcurve(color=colorx)
 
