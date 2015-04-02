@@ -42,6 +42,7 @@ scene.up=vector(0,1,0)
 
 
 #Reading x y and z data from file
+Tnum = []
 Xnum = []
 Ynum = []
 Znum = []
@@ -49,41 +50,11 @@ file = open('C:\Dev\workspace\VPython/golf-1-11-4.txt', 'rU')
 reader = csv.reader(file)
 for line in reader:
     reader.next() # This function make space in line
-    Xnum.append(line[1]),Ynum.append(line[2]),Znum.append(line[3])
+    Tnum.append(line[0]),Xnum.append(line[1]),Ynum.append(line[2]),Znum.append(line[3])
     #Xnum.append(line[1])
-    #print(line[0], line[6])  
+    #print(Xnum[1], Ynum[1])  
 
-def convertADCtoDecimal(x,y,z):
-    Adcx = float(x)
-    Adcy = float(y)
-    Adcz = float(z)
-    Vx = Adcx * 3.3/65535       #AdcX * RefVoltage/ 2^16 -1
-    Vy = Adcy * 3.3/65635
-    Vz = Adcz * 3.3/65635
-    print(Vx,Vy,Vz)
 
-VxZeroG = 0
-VyZeroG = 0
-VzZeroG = 1
-    
-for i in range(len(Xnum)-1):
-    Adcx = float(Xnum[i])
-    Adcy = float(Ynum[i])
-    Adcz = float(Znum[i])
-    Vx = Adcx * 3.3/65535       #AdcX * RefVoltage/ 2^16 -1
-    Vy = Adcy * 3.3/65635
-    Vz = Adcz * 3.3 /65635
-    #Delta DVx DVy DVz
-    DVx = Vx - VxZeroG
-    VxZeroG = Vx
-    DVy = Vy - VyZeroG
-    VxZeroG = Vy
-    DVz = Vz - VyZeroG
-    VzZeroG = Vz
-    Xnum[i] = DVx
-    Ynum[i] = DVy
-    Znum[i] = DVz
-    print(Xnum[i],Ynum[i],Znum[i])
 
 
 # Vector scale
@@ -99,7 +70,7 @@ bgcolor=color.black
 #Velocity graph
 vel_graph = gdisplay(x=0, y=200, width=250, height=200, 
              title='Velocity vs. Time', xtitle='t(s)', ytitle='v (m/s)', 
-             xmax=100, xmin=0., ymax=1, ymin=-1, 
+             xmax=100, xmin=0., ymax=2, ymin=-2, 
              foreground=fgcolor, background=bgcolor)
 vel_Plot = gcurve(color=colory)
 
@@ -107,7 +78,7 @@ vel_Plot = gcurve(color=colory)
 #Acceleration graph
 acc_graph = gdisplay(x=0, y=400, width=250, height=200, 
              title='Acceleration vs. Time', xtitle='t(s)', ytitle='a (m/s^2)', 
-             xmax=100, xmin=0., ymax=1, ymin=-1, 
+             xmax=100, xmin=0., ymax=2, ymin=-2, 
              foreground=fgcolor, background=bgcolor)
 acc_Plot = gcurve(color=colorx)
 
@@ -179,7 +150,7 @@ def posANDacc(x,y,z):
     ball.acc = a
     ball.pos += ball.vel*dt
     ball.vel += ball.acc*dt
-    vel_Plot.plot(pos=(time,mag(ball.vel)))
+    vel_Plot.plot(pos=(time,ball.vel.x))
     #velx_Plot.plot(pos=(time,mag(ball.pos)))       #Plot Postion of object
     acc_Plot.plot(pos=(time,mag(ball.acc)))       #Plot Acceleration 
 
@@ -189,12 +160,49 @@ def vectorVelocity(x,y,z):
     r = arrow(pos= ball.pos, axis = ball.vel*vscale, color=color.yellow)
     ball.pos = ball.pos + ball.vel*dt     #Update ball position
 
+def convertADCtoDecimal(x,y,z):
+    Adcx = float(x)
+    Adcy = float(y)
+    Adcz = float(z)
+    Vx = Adcx * 3.3/65535       #AdcX * RefVoltage/ 2^16 -1
+    Vy = Adcy * 3.3/65635
+    Vz = Adcz * 3.3/65635
+    print(Vx,Vy,Vz)
+
+def convertADCtoDecimalStore(x,y,z):
+    VxZeroG = 1.65
+    VyZeroG = 1.65
+    VzZeroG = 1.65
+    Adcx = float(Xnum[i])
+    Adcy = float(Ynum[i])
+    Adcz = float(Znum[i])
+    Vx = Adcx * 3.3/65535       #AdcX * RefVoltage/ 2^16 -1
+    Vy = Adcy * 3.3/65635
+    Vz = Adcz * 3.3 /65635
+    #Delta DVx DVy DVz
+    DVx = Vx - VxZeroG/0.10
+    VxZeroG = Vx
+    DVy = Vy - VyZeroG/0.10
+    VxZeroG = Vy
+    DVz = Vz - VyZeroG/0.10
+    VzZeroG = Vz
+    Xnum[i] = DVx
+    Ynum[i] = DVy
+    Znum[i] = DVz
+    print(Xnum[i],Ynum[i],Znum[i])
+
+
+
 #Main Loop 
 for i in range(len(Xnum)-1):
     rate(50)
 # This function calculate velocity and position of x y and z coordinates
+    print("Time: ",Tnum[i],"X: ", Xnum[i],"Y: ",Ynum[i],"Z: ", Znum[i])
+    #posANDacc(Xnum[i],Ynum[i],Znum[i])      # This will show graph
+    #convertADCtoDecimal(Xnum[i],Ynum[i],Znum[i])
+    #print("Time: ",Tnum[i],"X: ", Xnum[i],"Y: ",Ynum[i],"Z: ", Znum[i])
+    #convertADCtoDecimalStore(Xnum[i],Ynum[i],Znum[i])
     #vectorVelocity(Xnum[i],Ynum[i],Znum[i]) # This will show moving vector direction
-    posANDacc(Xnum[i],Ynum[i],Znum[i])      # This will show graph
     scene.center=ball.pos-vector(0,1,0) #keep ball in view
     time = time + dt
 
