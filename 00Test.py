@@ -22,6 +22,16 @@ scene.autoscale = 0
 scene.title = "3 axis accelro reading"
 scene.range = (2,2,2)
 
+#  Use the following global variables and access functions
+#  to calibrate the acceleration sensor
+#float    base_x_accel;
+#float    base_y_accel;
+#float    base_z_accel;
+
+#float    base_x_gyro;
+#float    base_y_gyro;
+#float    base_z_gyro;
+
 #Create ball sphere
 ball = sphere(pos = vector(1,1,1), radius = 0.3, color=color.blue)
 
@@ -35,6 +45,7 @@ xLabel = label(pos = (1,0,0), text = "X", box = False, color = color.red)
 yLabel = label(pos = (0,1,0), text = "Y", box = False, color = color.green)
 zLabel = label(pos = (0,0,1), text = "Z", box = False, color = color.blue)
 
+
 #adjest arrow setting
 scene.autoscale=0
 scene.eye=vector(0,0,0)
@@ -46,6 +57,8 @@ Tnum = []
 Xnum = []
 Ynum = []
 Znum = []
+
+
 file = open('C:\Dev\workspace\VPython/golf-1-11-4.txt', 'rU')
 reader = csv.reader(file)
 for line in reader:
@@ -189,15 +202,14 @@ def convertADCtoDecimalStore(x,y,z):
     Xnum[i] = DVx
     Ynum[i] = DVy
     Znum[i] = DVz
-    print(Xnum[i],Ynum[i],Znum[i])
-
+    print(Xnum[i],Ynum[i],Znum[i]);
 
 
 #Main Loop 
 for i in range(len(Xnum)-1):
     rate(50)
 # This function calculate velocity and position of x y and z coordinates
-    print("Time: ",Tnum[i],"X: ", Xnum[i],"Y: ",Ynum[i],"Z: ", Znum[i])
+    #print("Time: ",Tnum[i],"X: ", Xnum[i],"Y: ",Ynum[i],"Z: ", Znum[i])
     #posANDacc(Xnum[i],Ynum[i],Znum[i])      # This will show graph
     #convertADCtoDecimal(Xnum[i],Ynum[i],Znum[i])
     #print("Time: ",Tnum[i],"X: ", Xnum[i],"Y: ",Ynum[i],"Z: ", Znum[i])
