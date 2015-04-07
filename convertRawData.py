@@ -83,6 +83,7 @@ last_gyro_x_angle = 0  #Store the gyro angles to compare drift
 last_gyro_y_angle = 0
 last_gyro_z_angle = 0
 
+#DEFINE SETTER METHOD
 def set_last_read_angle_data(time,x,y,z,x_gyro,y_gyro,z_gyro): 
   global last_read_time
   last_read_time = time;
@@ -99,6 +100,7 @@ def set_last_read_angle_data(time,x,y,z,x_gyro,y_gyro,z_gyro):
   global last_gyro_z_angle
   last_gyro_z_angle = z_gyro;
 
+#DEFINE GETTER METHOD
 def get_last_time():
     return last_read_time
 def get_last_x_angle():
