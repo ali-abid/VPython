@@ -281,12 +281,12 @@ def convertAccelGyro(dt, x,y,z,Gx,Gy,Gz):
     t_now = float(Tnum[i]);
     last_time = float(Tnum[i-1]);
     dt =(t_now - last_time)/1000.0;
-    #gyro_angle_x = gyro_x*dt + get_last_x_angle();
-   # float gyro_angle_y = gyro_y*dt + get_last_y_angle();
-    #float gyro_angle_z = gyro_z*dt + get_last_z_angle();
-    global last_read_time
-    last_read_time += 1
-    print(get_last_time())
+    gyro_angle_x = gyro_x*dt + get_last_x_angle();
+    gyro_angle_y = gyro_y*dt + get_last_y_angle();
+    gyro_angle_z = gyro_z*dt + get_last_z_angle();
+    print(gyro_angle_x)
+
+    
       
 #Main Loop 
 for i in range(len(Xnum)-1):
