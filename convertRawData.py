@@ -72,6 +72,7 @@ for line in reader:
     #Xnum.append(line[1])
     #print(Xnum[1], Ynum[1])  
 
+#DECLARE GLOBAL VARIABLES 
 #Use the following global variables and access functions to help store the overall
 #rotation angle of the sensor
 last_read_time = 0
