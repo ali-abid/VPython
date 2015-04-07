@@ -11,6 +11,8 @@ import math as m
 import csv
 import re
 from visual.graph import *
+import time
+
 
 PI = math.pi
 DEG = 180/PI
@@ -70,6 +72,46 @@ for line in reader:
     #Xnum.append(line[1])
     #print(Xnum[1], Ynum[1])  
 
+#Use the following global variables and access functions to help store the overall
+#rotation angle of the sensor
+last_read_time = 0
+last_x_angle = 0       #These are the filtered angles
+last_y_angle = 0
+last_z_angle = 0  
+last_gyro_x_angle = 0  #Store the gyro angles to compare drift
+last_gyro_y_angle = 0
+last_gyro_z_angle = 0
+
+def set_last_read_angle_data(time,x,y,z,x_gyro,y_gyro,z_gyro): 
+  global last_read_time
+  last_read_time = time;
+  global last_x_angle
+  last_x_angle = x;
+  global last_y_angle
+  last_y_angle = y;
+  global last_z_angle
+  last_z_angle = z;
+  global last_gyro_x_angle
+  last_gyro_x_angle = x_gyro;
+  global last_gyro_y_angle
+  last_gyro_y_angle = y_gyro;
+  global last_gyro_z_angle
+  last_gyro_z_angle = z_gyro;
+
+def get_last_time():
+    return last_read_time
+def get_last_x_angle():
+    return last_x_angle
+def get_last_y_angle():
+    return last_y_angle
+def get_last_z_angle():
+    return last_z_angle
+def get_last_gyro_x_angle():
+    return last_gyro_x_angle
+def get_last_gyro_y_angle():
+    return last_gyro_y_angle
+def get_last_gyro_z_angle():
+    return last_gyro_z_angle
 
 
 
@@ -209,8 +251,8 @@ def convertADCtoDecimalStore(x,y,z):
     print(Xnum[i],Ynum[i],Znum[i]);
 
 
-
-def convertAccelGyro(x,y,z,Gx,Gy,Gz):
+#Convert Raw data
+def convertAccelGyro(dt, x,y,z,Gx,Gy,Gz):
     #Convert gyro values to degrees/sec
     FS_SEL = 131
 
@@ -231,15 +273,26 @@ def convertAccelGyro(x,y,z,Gx,Gy,Gz):
     accel_angle_y = atan(-1*accel_x/sqrt(pow(accel_y,2) + pow(accel_z,2)))* DEG;
     accel_angle_x = atan(accel_y/sqrt(pow(accel_x,2) + pow(accel_z,2)))* DEG;
     accel_angle_z = 0
-    print(gyro_x)
 
+    #Compute the (filtered) gyro angles
+    t_now = float(Tnum[i]);
+    last_time = float(Tnum[i-1]);
+    dt =(t_now - last_time)/1000.0;
+    #gyro_angle_x = gyro_x*dt + get_last_x_angle();
+   # float gyro_angle_y = gyro_y*dt + get_last_y_angle();
+    #float gyro_angle_z = gyro_z*dt + get_last_z_angle();
+    global last_read_time
+    last_read_time += 1
+    print(get_last_time())
+      
 #Main Loop 
 for i in range(len(Xnum)-1):
     rate(100)
 # This function calculate velocity and position of x y and z coordinates
     #print("Raw Values:")
     #print("Time: ",time,"X: ", Xnum[i],"Y: ",Ynum[i],"Z: ", Znum[i])
-    convertAccelGyro(Xnum[i],Ynum[i],Znum[i],GXnum[i],GYnum[i],GZnum[i])
+    convertAccelGyro(Tnum[i], Xnum[i],Ynum[i],Znum[i],GXnum[i],GYnum[i],GZnum[i])
+    #print(last_read_time)
     #posANDacc(Xnum[i],Ynum[i],Znum[i])      # This will show graph
     #convertADCtoDecimal(Xnum[i],Ynum[i],Znum[i])
     #print("Time: ",Tnum[i],"X: ", Xnum[i],"Y: ",Ynum[i],"Z: ", Znum[i])
