@@ -13,7 +13,7 @@ import re
 from visual.graph import *
 
 PI = math.pi
-DEG = PI/180
+DEG = 180/PI
 scene.x = 0
 scene.y = 0
 scene.width = 600
@@ -58,12 +58,15 @@ Xnum = []
 Ynum = []
 Znum = []
 
+GXnum = []
+GYnum = []
+GZnum = []
 
 file = open('C:\Dev\workspace\VPython/golf-1-11-4.txt', 'rU')
 reader = csv.reader(file)
 for line in reader:
     reader.next() # This function make space in line
-    Tnum.append(line[0]),Xnum.append(line[1]),Ynum.append(line[2]),Znum.append(line[3])
+    Tnum.append(line[0]),Xnum.append(line[1]),Ynum.append(line[2]),Znum.append(line[3]),GXnum.append(line[4]),GYnum.append(line[5]),GZnum.append(line[6])
     #Xnum.append(line[1])
     #print(Xnum[1], Ynum[1])  
 
@@ -182,6 +185,7 @@ def convertADCtoDecimal(x,y,z):
     Vz = Adcz * 3.3/65635
     print(Vx,Vy,Vz)
 
+
 def convertADCtoDecimalStore(x,y,z):
     VxZeroG = 1.65
     VyZeroG = 1.65
@@ -205,11 +209,37 @@ def convertADCtoDecimalStore(x,y,z):
     print(Xnum[i],Ynum[i],Znum[i]);
 
 
+
+def convertAccelGyro(x,y,z,Gx,Gy,Gz):
+    #Convert gyro values to degrees/sec
+    FS_SEL = 131
+
+    cgx = float(Gx);
+    gyro_x = cgx/FS_SEL
+    cgy = float(Gy)
+    gyro_y = cgy/FS_SEL;
+    cgz = float(Gz)
+    gyro_z = cgz/FS_SEL;
+    
+    #Get raw values
+    #float G_CONVERT = 16384;
+    accel_x = float(x)
+    accel_y = float(y)
+    accel_z = float(z)
+
+    #Get angle values from accelerometer
+    accel_angle_y = atan(-1*accel_x/sqrt(pow(accel_y,2) + pow(accel_z,2)))* DEG;
+    accel_angle_x = atan(accel_y/sqrt(pow(accel_x,2) + pow(accel_z,2)))* DEG;
+    accel_angle_z = 0
+    print(gyro_x)
+
 #Main Loop 
 for i in range(len(Xnum)-1):
-    rate(50)
+    rate(100)
 # This function calculate velocity and position of x y and z coordinates
-    #print("Time: ",Tnum[i],"X: ", Xnum[i],"Y: ",Ynum[i],"Z: ", Znum[i])
+    #print("Raw Values:")
+    #print("Time: ",time,"X: ", Xnum[i],"Y: ",Ynum[i],"Z: ", Znum[i])
+    convertAccelGyro(Xnum[i],Ynum[i],Znum[i],GXnum[i],GYnum[i],GZnum[i])
     #posANDacc(Xnum[i],Ynum[i],Znum[i])      # This will show graph
     #convertADCtoDecimal(Xnum[i],Ynum[i],Znum[i])
     #print("Time: ",Tnum[i],"X: ", Xnum[i],"Y: ",Ynum[i],"Z: ", Znum[i])
