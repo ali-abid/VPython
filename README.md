@@ -21,3 +21,6 @@ http://www.geekmomprojects.com/mpu-6050-dmp-data-from-i2cdevlib/
 
 MPU-6050 Data with a complementary filter
 http://www.geekmomprojects.com/gyroscopes-and-accelerometers-on-a-chip/ 
+
+Visualize IMU Data in Vpython
+https://www.youtube.com/watch?v=pylMfUNIyHA
