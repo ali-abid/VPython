@@ -4,7 +4,7 @@ Reading x y z coordinates from csv file and visualize 3D graphics.
 Download csv format data
 http://figshare.com/articles/EEG_EMG_accelerometer_and_gyroscope_data_for_a_FES_mediated_brain_computer_interface_BCI_aiming_to_suppress_neurological_tremor/879661
 
-MPU 6050
+#MPU 6050
 http://www.invensense.com/mems/gyro/documents/PS-MPU-6000A-00v3.4.pdf
 
 Calculate G's of accelerometer
@@ -19,3 +19,5 @@ http://www.i2cdevlib.com/forums/topic/4-understanding-raw-values-of-acceleromete
 
 http://www.geekmomprojects.com/mpu-6050-dmp-data-from-i2cdevlib/
 
+MPU-6050 Data with a complementary filter
+http://www.geekmomprojects.com/gyroscopes-and-accelerometers-on-a-chip/ 
