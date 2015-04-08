@@ -284,7 +284,23 @@ def convertAccelGyro(dt, x,y,z,Gx,Gy,Gz):
     gyro_angle_x = gyro_x*dt + get_last_x_angle();
     gyro_angle_y = gyro_y*dt + get_last_y_angle();
     gyro_angle_z = gyro_z*dt + get_last_z_angle();
-    print(gyro_angle_x)
+
+    #Compute the drifting gyro angles
+    unfiltered_gyro_angle_x = gyro_x*dt + get_last_gyro_x_angle();
+    unfiltered_gyro_angle_y = gyro_y*dt + get_last_gyro_y_angle();
+    unfiltered_gyro_angle_z = gyro_z*dt + get_last_gyro_z_angle();
+
+    #Apply the complementary filter to figure out the change in angle - choice of alpha is
+    #estimated now.  Alpha depends on the sampling rate...
+    alpha = 0.96;
+    angle_x = alpha*gyro_angle_x + (1.0 - alpha)*accel_angle_x;
+    angle_y = alpha*gyro_angle_y + (1.0 - alpha)*accel_angle_y;
+    angle_z = gyro_angle_z;     #Accelerometer doesn't give z-angle
+
+    #Update the saved data with the latest values
+    set_last_read_angle_data(t_now, angle_x, angle_y, angle_z, unfiltered_gyro_angle_x, unfiltered_gyro_angle_y, unfiltered_gyro_angle_z);
+  
+    print(unfiltered_gyro_angle_z)
 
     
       
