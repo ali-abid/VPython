@@ -67,26 +67,6 @@ angle_x_data = []
 angle_y_data = []
 angle_z_data = []
 
-file = open('C:\Dev\workspace\VPython/golf-1-11-4.txt', 'rU')
-reader = csv.reader(file)
-for line in reader:
-    reader.next() # This function make space in line
-    Tnum.append(line[0]),Xnum.append(line[1]),Ynum.append(line[2]),Znum.append(line[3]),GXnum.append(line[4]),GYnum.append(line[5]),GZnum.append(line[6])
-    #Following 9 readings store data.
-    accel_angle_x_data.append(line[0])
-    accel_angle_y_data.append(line[0])
-    accel_angle_z_data.append(line[0])
-    unfiltered_gyro_angle_x_data.append(line[0])
-    unfiltered_gyro_angle_y_data.append(line[0])
-    unfiltered_gyro_angle_z_data.append(line[0])
-    angle_x_data.append(line[0])
-    angle_y_data.append(line[0])
-    angle_z_data.append(line[0])
-    
-    #Xnum.append(line[1])
-    #print(Xnum[1], Ynum[1])  
-
-
 #DECLARE GLOBAL VARIABLES 
 #Use the following global variables and access functions to help store the overall
 #rotation angle of the sensor
@@ -140,6 +120,91 @@ def get_last_gyro_y_angle():
     return last_gyro_y_angle
 def get_last_gyro_z_angle():
     return last_gyro_z_angle
+
+
+
+def calibrate_sensors(x,y,z,Gx,Gy,Gz):
+    accel_t_gyro_value_x_accel = float(x)
+    accel_t_gyro_value_y_accel = float(y)
+    accel_t_gyro_value_z_accel = float(z)
+    accel_t_gyro_value_x_gyro = float(Gx)
+    accel_t_gyro_value_y_gyro = float(Gy)
+    accel_t_gyro_value_z_gyro = float(Gz)
+    
+    num_readings = 10
+    x_accel = 0;
+    y_accel = 0;
+    z_accel = 0;
+    x_gyro = 0;
+    y_gyro = 0;
+    z_gyro = 0;
+    print("Starting Calibration")
+    for i in range(num_readings):
+        rate(100)
+        x_accel += accel_t_gyro_value_x_accel;
+        y_accel += accel_t_gyro_value_y_accel;
+        z_accel += accel_t_gyro_value_z_accel;
+        x_gyro += accel_t_gyro_value_x_gyro;
+        y_gyro += accel_t_gyro_value_y_gyro;
+        z_gyro += accel_t_gyro_value_z_gyro;
+
+    x_accel /= num_readings
+    y_accel /= num_readings
+    z_accel /= num_readings
+    x_gyro /= num_readings
+    y_gyro /= num_readings
+    z_gyro /= num_readings
+
+    #Store the raw calibration values globally
+    global base_x_accel
+    base_x_accel = x_accel
+    global base_y_accel
+    base_y_accel = y_accel
+    global base_z_accel
+    base_z_accel = z_accel
+    global base_x_gyro
+    base_x_gyro = x_gyro
+    global base_y_gyro
+    base_y_gyro = y_gyro
+    global base_z_gyro
+    base_z_gyro = z_gyro;
+    print("Finishing Calibration")
+
+
+motionLessFile = 'C:\Dev\workspace\VPython/golf-1-14-58.txt'
+file = open(motionLessFile, 'rU')
+reader = csv.reader(file)
+for line in reader:
+    reader.next() # This function make space in line
+    Tnum.append(line[0]),Xnum.append(line[1]),Ynum.append(line[2]),Znum.append(line[3]),GXnum.append(line[4]),GYnum.append(line[5]),GZnum.append(line[6])
+
+#Initialize the angles
+#For calibration sensor should be motionless on horizantal surface
+#Read that motionless file
+calibrate_sensors(Xnum[i],Ynum[i],Znum[i],GXnum[i],GYnum[i],GZnum[i])
+set_last_read_angle_data(Tnum[i], 0, 0, 0, 0, 0, 0);
+
+
+testFile = 'C:\Dev\workspace\VPython/golf-1-11-4.txt'
+file = open(testFile, 'rU')
+reader = csv.reader(file)
+for line in reader:
+    reader.next() # This function make space in line
+    Tnum.append(line[0]),Xnum.append(line[1]),Ynum.append(line[2]),Znum.append(line[3]),GXnum.append(line[4]),GYnum.append(line[5]),GZnum.append(line[6])
+    #Following 9 readings store data.
+    accel_angle_x_data.append(line[0])
+    accel_angle_y_data.append(line[0])
+    accel_angle_z_data.append(line[0])
+    unfiltered_gyro_angle_x_data.append(line[0])
+    unfiltered_gyro_angle_y_data.append(line[0])
+    unfiltered_gyro_angle_z_data.append(line[0])
+    angle_x_data.append(line[0])
+    angle_y_data.append(line[0])
+    angle_z_data.append(line[0])
+    
+    #Xnum.append(line[1])
+    #print(Xnum[1], Ynum[1])  
+
 
 
 
@@ -278,56 +343,6 @@ def convertADCtoDecimalStore(x,y,z):
     Znum[i] = DVz
     print(Xnum[i],Ynum[i],Znum[i]);
 
-def calibrate_sensors(x,y,z,Gx,Gy,Gz):
-    accel_t_gyro_value_x_accel = float(x)
-    accel_t_gyro_value_y_accel = float(y)
-    accel_t_gyro_value_z_accel = float(z)
-    accel_t_gyro_value_x_gyro = float(Gx)
-    accel_t_gyro_value_y_gyro = float(Gy)
-    accel_t_gyro_value_z_gyro = float(Gz)
-    
-    num_readings = 10
-    x_accel = 0;
-    y_accel = 0;
-    z_accel = 0;
-    x_gyro = 0;
-    y_gyro = 0;
-    z_gyro = 0;
-    print("Starting Calibration")
-    for i in range(num_readings):
-        rate(100)
-        x_accel += accel_t_gyro_value_x_accel;
-        y_accel += accel_t_gyro_value_y_accel;
-        z_accel += accel_t_gyro_value_z_accel;
-        x_gyro += accel_t_gyro_value_x_gyro;
-        y_gyro += accel_t_gyro_value_y_gyro;
-        z_gyro += accel_t_gyro_value_z_gyro;
-
-    x_accel /= num_readings
-    y_accel /= num_readings
-    z_accel /= num_readings
-    x_gyro /= num_readings
-    y_gyro /= num_readings
-    z_gyro /= num_readings
-
-    #Store the raw calibration values globally
-    global base_x_accel
-    base_x_accel = x_accel
-    global base_y_accel
-    base_y_accel = y_accel
-    global base_z_accel
-    base_z_accel = z_accel
-    global base_x_gyro
-    base_x_gyro = x_gyro
-    global base_y_gyro
-    base_y_gyro = y_gyro
-    global base_z_gyro
-    base_z_gyro = z_gyro;
-    print("Finishing Calibration")
-
-
-calibrate_sensors(Xnum[i],Ynum[i],Znum[i],GXnum[i],GYnum[i],GZnum[i])
-print(base_x_accel)
 
 #Convert Raw data
 def convertAccelGyro(dt, x,y,z,Gx,Gy,Gz):
