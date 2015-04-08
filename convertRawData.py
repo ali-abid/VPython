@@ -181,8 +181,9 @@ for line in reader:
 #Initialize the angles
 #For calibration sensor should be motionless on horizantal surface
 #Read that motionless file
-calibrate_sensors(Xnum[i],Ynum[i],Znum[i],GXnum[i],GYnum[i],GZnum[i])
-set_last_read_angle_data(Tnum[i], 0, 0, 0, 0, 0, 0);
+for i in range(len(Xnum)-1):
+    calibrate_sensors(Xnum[i],Ynum[i],Znum[i],GXnum[i],GYnum[i],GZnum[i])
+    set_last_read_angle_data(Tnum[i], 0, 0, 0, 0, 0, 0);
 
 
 testFile = 'C:\Dev\workspace\VPython/golf-1-11-4.txt'
