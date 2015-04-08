@@ -12,7 +12,7 @@ import csv
 import re
 from visual.graph import *
 import time
-
+from visual.filedialog import save_file
 
 PI = math.pi
 DEG = 180/PI
@@ -56,13 +56,36 @@ GXnum = []
 GYnum = []
 GZnum = []
 
+accel_angle_x_data = []
+accel_angle_y_data = []
+accel_angle_z_data = []
+unfiltered_gyro_angle_x_data = []
+unfiltered_gyro_angle_y_data = []
+unfiltered_gyro_angle_z_data = []
+
+angle_x_data = []
+angle_y_data = []
+angle_z_data = []
+
 file = open('C:\Dev\workspace\VPython/golf-1-11-4.txt', 'rU')
 reader = csv.reader(file)
 for line in reader:
     reader.next() # This function make space in line
     Tnum.append(line[0]),Xnum.append(line[1]),Ynum.append(line[2]),Znum.append(line[3]),GXnum.append(line[4]),GYnum.append(line[5]),GZnum.append(line[6])
+    #Following 9 readings store data.
+    accel_angle_x_data.append(line[0])
+    accel_angle_y_data.append(line[0])
+    accel_angle_z_data.append(line[0])
+    unfiltered_gyro_angle_x_data.append(line[0])
+    unfiltered_gyro_angle_y_data.append(line[0])
+    unfiltered_gyro_angle_z_data.append(line[0])
+    angle_x_data.append(line[0])
+    angle_y_data.append(line[0])
+    angle_z_data.append(line[0])
+    
     #Xnum.append(line[1])
     #print(Xnum[1], Ynum[1])  
+
 
 #DECLARE GLOBAL VARIABLES 
 #Use the following global variables and access functions to help store the overall
@@ -310,13 +333,12 @@ print(base_x_accel)
 def convertAccelGyro(dt, x,y,z,Gx,Gy,Gz):
     #Convert gyro values to degrees/sec
     FS_SEL = 131
-
     cgx = float(Gx);
-    gyro_x = cgx/FS_SEL
+    gyro_x = (cgx-base_x_gyro)/FS_SEL
     cgy = float(Gy)
-    gyro_y = cgy/FS_SEL;
+    gyro_y = (cgy-base_y_gyro)/FS_SEL;
     cgz = float(Gz)
-    gyro_z = cgz/FS_SEL;
+    gyro_z = (cgz-base_z_gyro)/FS_SEL;
     
     #Get raw values
     #float G_CONVERT = 16384;
@@ -329,6 +351,11 @@ def convertAccelGyro(dt, x,y,z,Gx,Gy,Gz):
     accel_angle_x = atan(accel_y/sqrt(pow(accel_x,2) + pow(accel_z,2)))* DEG;
     accel_angle_z = 0
 
+    #Store data into arrays for output
+    accel_angle_x_data[i] = accel_angle_x
+    accel_angle_y_data[i] = accel_angle_y
+    accel_angle_z_data[i] = accel_angle_z
+    
     #Compute the (filtered) gyro angles
     t_now = float(Tnum[i]);
     last_time = float(Tnum[i-1]);
@@ -342,6 +369,11 @@ def convertAccelGyro(dt, x,y,z,Gx,Gy,Gz):
     unfiltered_gyro_angle_y = gyro_y*dt + get_last_gyro_y_angle();
     unfiltered_gyro_angle_z = gyro_z*dt + get_last_gyro_z_angle();
 
+    unfiltered_gyro_angle_x_data[i] = unfiltered_gyro_angle_x
+    unfiltered_gyro_angle_y_data[i] = unfiltered_gyro_angle_y
+    unfiltered_gyro_angle_z_data[i] = unfiltered_gyro_angle_z
+
+    
     #Apply the complementary filter to figure out the change in angle - choice of alpha is
     #estimated now.  Alpha depends on the sampling rate...
     alpha = 0.96;
@@ -349,20 +381,26 @@ def convertAccelGyro(dt, x,y,z,Gx,Gy,Gz):
     angle_y = alpha*gyro_angle_y + (1.0 - alpha)*accel_angle_y;
     angle_z = gyro_angle_z;     #Accelerometer doesn't give z-angle
 
+    angle_x_data[i] = angle_x
+    angle_y_data[i] = angle_y
+    angle_z_data[i] = angle_z
+    
     #Update the saved data with the latest values
     set_last_read_angle_data(t_now, angle_x, angle_y, angle_z, unfiltered_gyro_angle_x, unfiltered_gyro_angle_y, unfiltered_gyro_angle_z);
   
-    print(unfiltered_gyro_angle_z)
+    print(angle_z)
 
-    
-      
+
+
+
 #Main Loop 
 for i in range(len(Xnum)-1):
     rate(100)
 # This function calculate velocity and position of x y and z coordinates
     #print("Raw Values:")
     #print("Time: ",time,"X: ", Xnum[i],"Y: ",Ynum[i],"Z: ", Znum[i])
-    #convertAccelGyro(Tnum[i], Xnum[i],Ynum[i],Znum[i],GXnum[i],GYnum[i],GZnum[i])
+    convertAccelGyro(Tnum[i], Xnum[i],Ynum[i],Znum[i],GXnum[i],GYnum[i],GZnum[i])
+    #print(Tnum[i],Xnum[i] = file_output)
     #print(last_read_time)
     #posANDacc(Xnum[i],Ynum[i],Znum[i])      # This will show graph
     #convertADCtoDecimal(Xnum[i],Ynum[i],Znum[i])
@@ -371,5 +409,30 @@ for i in range(len(Xnum)-1):
     #vectorVelocity(Xnum[i],Ynum[i],Znum[i]) # This will show moving vector direction
     scene.center=ball.pos-vector(0,1,0) #keep ball in view
     time = time + dt
+
+fd = save_file()
+if fd:
+    for i in range(len(accel_angle_x_data)-1):
+        print("Accel x angle: ", angle_z_data[i])
+        fd.write(str(accel_angle_x_data[i]))
+        fd.write(",\t")
+        fd.write(str(accel_angle_y_data[i]))
+        fd.write(",\t")
+        fd.write(str(accel_angle_z_data[i]))
+        fd.write(",\t")
+        fd.write(str(unfiltered_gyro_angle_x_data[i]))
+        fd.write(",\t")
+        fd.write(str(unfiltered_gyro_angle_y_data[i]))
+        fd.write(",\t")
+        fd.write(str(unfiltered_gyro_angle_z_data[i]))
+        fd.write(",\t")
+        fd.write(str(angle_x_data[i]))
+        fd.write(",\t")
+        fd.write(str(angle_y_data[i]))
+        fd.write(",\t")
+        fd.write(str(angle_z_data[i]))
+        fd.write("\n")
+        
+    fd.close()
 
 file.close()
