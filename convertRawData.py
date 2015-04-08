@@ -24,15 +24,7 @@ scene.autoscale = 0
 scene.title = "3 axis accelro reading"
 scene.range = (2,2,2)
 
-#  Use the following global variables and access functions
-#  to calibrate the acceleration sensor
-#float    base_x_accel;
-#float    base_y_accel;
-#float    base_z_accel;
 
-#float    base_x_gyro;
-#float    base_y_gyro;
-#float    base_z_gyro;
 
 #Create ball sphere
 ball = sphere(pos = vector(1,1,1), radius = 0.3, color=color.blue)
@@ -82,6 +74,16 @@ last_z_angle = 0
 last_gyro_x_angle = 0  #Store the gyro angles to compare drift
 last_gyro_y_angle = 0
 last_gyro_z_angle = 0
+
+#Use the following global variables and access functions
+#to calibrate the acceleration sensor
+base_x_accel = 0
+base_y_accel = 0
+base_z_accel = 0
+base_x_gyro = 0
+base_y_gyro = 0
+base_z_gyro = 0
+
 
 #DEFINE SETTER METHOD
 def set_last_read_angle_data(time,x,y,z,x_gyro,y_gyro,z_gyro): 
@@ -253,6 +255,56 @@ def convertADCtoDecimalStore(x,y,z):
     Znum[i] = DVz
     print(Xnum[i],Ynum[i],Znum[i]);
 
+def calibrate_sensors(x,y,z,Gx,Gy,Gz):
+    accel_t_gyro_value_x_accel = float(x)
+    accel_t_gyro_value_y_accel = float(y)
+    accel_t_gyro_value_z_accel = float(z)
+    accel_t_gyro_value_x_gyro = float(Gx)
+    accel_t_gyro_value_y_gyro = float(Gy)
+    accel_t_gyro_value_z_gyro = float(Gz)
+    
+    num_readings = 10
+    x_accel = 0;
+    y_accel = 0;
+    z_accel = 0;
+    x_gyro = 0;
+    y_gyro = 0;
+    z_gyro = 0;
+    print("Starting Calibration")
+    for i in range(num_readings):
+        rate(100)
+        x_accel += accel_t_gyro_value_x_accel;
+        y_accel += accel_t_gyro_value_y_accel;
+        z_accel += accel_t_gyro_value_z_accel;
+        x_gyro += accel_t_gyro_value_x_gyro;
+        y_gyro += accel_t_gyro_value_y_gyro;
+        z_gyro += accel_t_gyro_value_z_gyro;
+
+    x_accel /= num_readings
+    y_accel /= num_readings
+    z_accel /= num_readings
+    x_gyro /= num_readings
+    y_gyro /= num_readings
+    z_gyro /= num_readings
+
+    #Store the raw calibration values globally
+    global base_x_accel
+    base_x_accel = x_accel
+    global base_y_accel
+    base_y_accel = y_accel
+    global base_z_accel
+    base_z_accel = z_accel
+    global base_x_gyro
+    base_x_gyro = x_gyro
+    global base_y_gyro
+    base_y_gyro = y_gyro
+    global base_z_gyro
+    base_z_gyro = z_gyro;
+    print("Finishing Calibration")
+
+
+calibrate_sensors(Xnum[i],Ynum[i],Znum[i],GXnum[i],GYnum[i],GZnum[i])
+print(base_x_accel)
 
 #Convert Raw data
 def convertAccelGyro(dt, x,y,z,Gx,Gy,Gz):
@@ -310,7 +362,7 @@ for i in range(len(Xnum)-1):
 # This function calculate velocity and position of x y and z coordinates
     #print("Raw Values:")
     #print("Time: ",time,"X: ", Xnum[i],"Y: ",Ynum[i],"Z: ", Znum[i])
-    convertAccelGyro(Tnum[i], Xnum[i],Ynum[i],Znum[i],GXnum[i],GYnum[i],GZnum[i])
+    #convertAccelGyro(Tnum[i], Xnum[i],Ynum[i],Znum[i],GXnum[i],GYnum[i],GZnum[i])
     #print(last_read_time)
     #posANDacc(Xnum[i],Ynum[i],Znum[i])      # This will show graph
     #convertADCtoDecimal(Xnum[i],Ynum[i],Znum[i])
