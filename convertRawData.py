@@ -203,7 +203,7 @@ def convertAccelGyro(dt, x,y,z,Gx,Gy,Gz):
     #Delta Time
     t_now = float(Tnum[i]);
     last_time = float(Tnum[i-1]);
-    dt =(t_now - last_time)/100.0; # 10ms
+    dt =(t_now - last_time)/400.0; # 40ms
 
     #Default Gyro at 250 degrees/second
     # Output scale is 32786/250 = 131
@@ -228,7 +228,8 @@ def convertAccelGyro(dt, x,y,z,Gx,Gy,Gz):
     accel_angle_y = atan(-1*accel_x/sqrt(pow(accel_y,2) + pow(accel_z,2)))* DEG;
     accel_angle_x = atan(accel_y/sqrt(pow(accel_x,2) + pow(accel_z,2)))* DEG;
     accel_angle_z = 0
-
+    #print("Accel Angle x: ", accel_angle_x, "y: ", accel_angle_y, "z: ", accel_angle_z)
+    
     #Store data into arrays for output
     accel_angle_x_data[i] = accel_angle_x
     accel_angle_y_data[i] = accel_angle_y
@@ -238,9 +239,9 @@ def convertAccelGyro(dt, x,y,z,Gx,Gy,Gz):
     gyro_angle_x = gyro_x*dt + get_last_x_angle();
     gyro_angle_y = gyro_y*dt + get_last_y_angle();
     gyro_angle_z = gyro_z*dt + get_last_z_angle();
-    print("Delta t",dt,"Gyro x data:",gyro_x, "Last x angle", get_last_x_angle(), "Filtered Gyro Angle: ",gyro_angle_x)
-    print("Delata T:", dt)
-    print("Filtered Gyro Aanles: gyro x: ",gyro_angle_x, "gyro y: ", gyro_angle_y, "gyro z", gyro_angle_z )
+    #print("Delta t",dt,"Gyro x data:",gyro_x, "Last x angle", get_last_x_angle(), "Filtered Gyro Angle: ",gyro_angle_x)
+    #print("Delata T:", dt)
+    #print("Filtered Gyro Aanles: gyro x: ",gyro_angle_x, "gyro y: ", gyro_angle_y, "gyro z", gyro_angle_z )
     
     #Compute the drifting gyro angles
     unfiltered_gyro_angle_x = gyro_x*dt + get_last_gyro_x_angle();
@@ -251,7 +252,7 @@ def convertAccelGyro(dt, x,y,z,Gx,Gy,Gz):
     unfiltered_gyro_angle_y_data[i] = unfiltered_gyro_angle_y
     unfiltered_gyro_angle_z_data[i] = unfiltered_gyro_angle_z
     #print("Delata T:", dt)
-    print("Unfiltered Gyro Aanles: gyro x: ",unfiltered_gyro_angle_x, "gyro y: ", unfiltered_gyro_angle_y, "gyro z", unfiltered_gyro_angle_z )
+    #print("Unfiltered Gyro Aanles: gyro x: ",unfiltered_gyro_angle_x, "gyro y: ", unfiltered_gyro_angle_y, "gyro z", unfiltered_gyro_angle_z )
 
     
     #Apply the complementary filter to figure out the change in angle - choice of alpha is
@@ -260,7 +261,8 @@ def convertAccelGyro(dt, x,y,z,Gx,Gy,Gz):
     angle_x = alpha*gyro_angle_x + (1.0 - alpha)*accel_angle_x;
     angle_y = alpha*gyro_angle_y + (1.0 - alpha)*accel_angle_y;
     angle_z = gyro_angle_z;     #Accelerometer doesn't give z-angle
-
+    print("Complementary Filter Angle x: ",angle_x, "y: ",angle_y, "z: ",angle_z )
+    
     angle_x_data[i] = angle_x
     angle_y_data[i] = angle_y
     angle_z_data[i] = angle_z
@@ -435,8 +437,11 @@ for i in range(len(Xnum)-1):
 
 fd = save_file()
 if fd:
+    fd.write("t,x,y,z,Gx,Gy,Gz,FillX,FillY,FillZ")
+    fd.write("\n")
     for i in range(len(accel_angle_x_data)-1):
-        print("Accel x angle: ", angle_z_data[i])
+        fd.write((Tnum[i]-Tnum[i-1]/400))
+        fd.write(",\t")
         fd.write(str(accel_angle_x_data[i]))
         fd.write(",\t")
         fd.write(str(accel_angle_y_data[i]))
