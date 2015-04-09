@@ -200,6 +200,11 @@ set_last_read_angle_data(Tnum[i], 0, 0, 0, 0, 0, 0);
 #Convert Raw data
 def convertAccelGyro(dt, x,y,z,Gx,Gy,Gz):
 
+    #Delta Time
+    t_now = float(Tnum[i]);
+    last_time = float(Tnum[i-1]);
+    dt =(t_now - last_time)/100.0; # 10ms
+
     #Default Gyro at 250 degrees/second
     # Output scale is 32786/250 = 131
     #Convert gyro values to degrees/sec
@@ -230,9 +235,6 @@ def convertAccelGyro(dt, x,y,z,Gx,Gy,Gz):
     accel_angle_z_data[i] = accel_angle_z
     
     #Compute the (filtered) gyro angles
-    t_now = float(Tnum[i]);
-    last_time = float(Tnum[i-1]);
-    dt =(t_now - last_time)/100.0;
     gyro_angle_x = gyro_x*dt + get_last_x_angle();
     gyro_angle_y = gyro_y*dt + get_last_y_angle();
     gyro_angle_z = gyro_z*dt + get_last_z_angle();
