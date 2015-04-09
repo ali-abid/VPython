@@ -166,7 +166,7 @@ def calibrate_sensors(x,y,z,Gx,Gy,Gz):
     print("Finishing Calibration")
 
 
-RawDataFile = 'C:\Dev\workspace\VPython/golf-1-11-4.txt'
+RawDataFile = 'C:\Dev\workspace\VPython/golf-1-14-58.txt'
 file = open(RawDataFile, 'rU')
 reader = csv.reader(file)
 for line in reader:
@@ -291,10 +291,10 @@ bgcolor=color.black
 #Velocity graph
 vel_graph = gdisplay(x=0, y=200, width=250, height=200, 
              title='Velocity vs. Time', xtitle='t(s)', ytitle='v (m/s)', 
-             xmax=100, xmin=0., ymax=2, ymin=-2, 
+             xmax=1, xmin=0., ymax=5, ymin=-5, 
              foreground=fgcolor, background=bgcolor)
-vel_Plot = gcurve(color=colory)
-
+velx_Plot = gcurve(color=colory)
+velx_Plot2 = gcurve(color=colorz)
 
 #Acceleration graph
 acc_graph = gdisplay(x=0, y=400, width=250, height=200, 
@@ -338,6 +338,9 @@ def cart2sph(x,y,z):
 #py += ((vy + vy0)/2) * (t - t0);
 #pz += ((vz + vz0)/2) * (t - t0);
 def updateVel(x,y,z):
+    t_now = float(Tnum[i])
+    last_time = float(Tnum[i-1])
+    dt =((t_now - last_time)+3)/100.0 # 40ms
     vx = 0
     vx0 = 0
     ax0 = 0
@@ -346,7 +349,7 @@ def updateVel(x,y,z):
     y = float(y)
     z = float(z)
     ball.vel = vector(x,y,z)*vscale
-    a = acc(time, ball.pos, ball.vel)
+    a = acc(t_now, ball.pos, ball.vel)
     ax = a.x
     # Velocity of x
     vx += ((ax + ax0)/2) * (dt)
@@ -354,9 +357,9 @@ def updateVel(x,y,z):
     #Positin of x
     px += ((vx + vx0)/2) * (dt)
     vx0 = vx
-    velx_Plot.plot(pos=(time,vx))
-    velx_Plot2.plot(pos=(time,px))
-    print(dt)
+    #velx_Plot.plot(pos=(time,vx))
+    #velx_Plot2.plot(pos=(time,px))
+    #print(dt)
     
 
     
@@ -437,7 +440,8 @@ for i in range(len(Xnum)-1):
     #convertADCtoDecimal(Xnum[i],Ynum[i],Znum[i])
     #print("Time: ",Tnum[i],"X: ", Xnum[i],"Y: ",Ynum[i],"Z: ", Znum[i])
     #convertADCtoDecimalStore(Xnum[i],Ynum[i],Znum[i])
-    vectorVelocity(angle_x_data[i],angle_y_data[i],angle_z_data[i]) # This will show moving vector direction
+    #vectorVelocity(angle_x_data[i],angle_y_data[i],angle_z_data[i]) # This will show moving vector direction
+    updateVel(angle_x_data[i],angle_y_data[i],angle_z_data[i]) # This will show moving vector direction
     
     #time = time + dt
 
