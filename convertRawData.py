@@ -203,8 +203,9 @@ def convertAccelGyro(dt, x,y,z,Gx,Gy,Gz):
     #Delta Time
     t_now = float(Tnum[i]);
     last_time = float(Tnum[i-1]);
-    dt =(t_now - last_time)/400.0; # 40ms
-
+    dt =((t_now - last_time)+3)/100.0; # 40ms
+    print("Sampling rate: ",dt)
+    
     #Default Gyro at 250 degrees/second
     # Output scale is 32786/250 = 131
     #Convert gyro values to degrees/sec
@@ -239,7 +240,7 @@ def convertAccelGyro(dt, x,y,z,Gx,Gy,Gz):
     gyro_angle_x = gyro_x*dt + get_last_x_angle();
     gyro_angle_y = gyro_y*dt + get_last_y_angle();
     gyro_angle_z = gyro_z*dt + get_last_z_angle();
-    #print("Delta t",dt,"Gyro x data:",gyro_x, "Last x angle", get_last_x_angle(), "Filtered Gyro Angle: ",gyro_angle_x)
+    print("Delta t",dt,"Gyro z data:",gyro_z, "Last x angle", get_last_z_angle(), "Filtered Gyro Angle: ",gyro_angle_z)
     #print("Delata T:", dt)
     #print("Filtered Gyro Aanles: gyro x: ",gyro_angle_x, "gyro y: ", gyro_angle_y, "gyro z", gyro_angle_z )
     
@@ -376,9 +377,14 @@ def posANDacc(x,y,z):
 
 #This method show velocity vector and ball position 
 def vectorVelocity(x,y,z):
-    ball.vel = vector(float(Xnum[i]),float(Ynum[i]),float(Znum[i]))*vscale
+    t_now = float(Tnum[i]);
+    last_time = float(Tnum[i-1]);
+    dt =((t_now - last_time)+3)/100.0; # 40ms
+
+    ball.vel = vector(float(x),float(y),float(z))*vscale
     r = arrow(pos= ball.pos, axis = ball.vel*vscale, color=color.yellow)
     ball.pos = ball.pos + ball.vel*dt     #Update ball position
+    scene.center=ball.pos-vector(0,1,0) #keep ball in view
 
 def convertADCtoDecimal(x,y,z):
     Adcx = float(x)
@@ -431,16 +437,19 @@ for i in range(len(Xnum)-1):
     #convertADCtoDecimal(Xnum[i],Ynum[i],Znum[i])
     #print("Time: ",Tnum[i],"X: ", Xnum[i],"Y: ",Ynum[i],"Z: ", Znum[i])
     #convertADCtoDecimalStore(Xnum[i],Ynum[i],Znum[i])
-    #vectorVelocity(Xnum[i],Ynum[i],Znum[i]) # This will show moving vector direction
-    scene.center=ball.pos-vector(0,1,0) #keep ball in view
-    time = time + dt
+    vectorVelocity(angle_x_data[i],angle_y_data[i],angle_z_data[i]) # This will show moving vector direction
+    
+    #time = time + dt
 
 fd = save_file()
 if fd:
     fd.write("t,x,y,z,Gx,Gy,Gz,FillX,FillY,FillZ")
     fd.write("\n")
     for i in range(len(accel_angle_x_data)-1):
-        fd.write((Tnum[i]-Tnum[i-1]/400))
+        t_now = float(Tnum[i]);
+        last_time = float(Tnum[i-1]);
+        dt =((t_now - last_time)+3)/100.0; # 40ms
+        fd.write(str(dt))
         fd.write(",\t")
         fd.write(str(accel_angle_x_data[i]))
         fd.write(",\t")
