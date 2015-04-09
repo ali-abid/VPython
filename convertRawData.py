@@ -124,13 +124,6 @@ def get_last_gyro_z_angle():
 
 
 def calibrate_sensors(x,y,z,Gx,Gy,Gz):
-    accel_t_gyro_value_x_accel = float(x)
-    accel_t_gyro_value_y_accel = float(y)
-    accel_t_gyro_value_z_accel = float(z)
-    accel_t_gyro_value_x_gyro = float(Gx)
-    accel_t_gyro_value_y_gyro = float(Gy)
-    accel_t_gyro_value_z_gyro = float(Gz)
-    
     num_readings = 10
     x_accel = 0;
     y_accel = 0;
@@ -140,13 +133,15 @@ def calibrate_sensors(x,y,z,Gx,Gy,Gz):
     z_gyro = 0;
     print("Starting Calibration")
     for i in range(num_readings):
-        rate(100)
-        x_accel += accel_t_gyro_value_x_accel;
-        y_accel += accel_t_gyro_value_y_accel;
-        z_accel += accel_t_gyro_value_z_accel;
-        x_gyro += accel_t_gyro_value_x_gyro;
-        y_gyro += accel_t_gyro_value_y_gyro;
-        z_gyro += accel_t_gyro_value_z_gyro;
+        print(i)
+        print(Tnum[i],Xnum[i],Ynum[i],Znum[i],GXnum[i],GYnum[i],GZnum[i])
+        rate(10)
+        x_accel += float(Xnum[i])
+        y_accel += float(Ynum[i])
+        z_accel += float(Znum[i])
+        x_gyro += float(GXnum[i])
+        y_gyro += float(GYnum[i])
+        z_gyro += float(GZnum[i])
 
     x_accel /= num_readings
     y_accel /= num_readings
@@ -171,28 +166,14 @@ def calibrate_sensors(x,y,z,Gx,Gy,Gz):
     print("Finishing Calibration")
 
 
-motionLessFile = 'C:\Dev\workspace\VPython/golf-1-14-58.txt'
-file = open(motionLessFile, 'rU')
+RawDataFile = 'C:\Dev\workspace\VPython/golf-1-11-4.txt'
+file = open(RawDataFile, 'rU')
 reader = csv.reader(file)
 for line in reader:
     reader.next() # This function make space in line
     Tnum.append(line[0]),Xnum.append(line[1]),Ynum.append(line[2]),Znum.append(line[3]),GXnum.append(line[4]),GYnum.append(line[5]),GZnum.append(line[6])
 
-#Initialize the angles
-#For calibration sensor should be motionless on horizantal surface
-#Read that motionless file
-for i in range(len(Xnum)-1):
-    calibrate_sensors(Xnum[i],Ynum[i],Znum[i],GXnum[i],GYnum[i],GZnum[i])
-    set_last_read_angle_data(Tnum[i], 0, 0, 0, 0, 0, 0);
-
-
-testFile = 'C:\Dev\workspace\VPython/golf-1-11-4.txt'
-file = open(testFile, 'rU')
-reader = csv.reader(file)
-for line in reader:
-    reader.next() # This function make space in line
-    Tnum.append(line[0]),Xnum.append(line[1]),Ynum.append(line[2]),Znum.append(line[3]),GXnum.append(line[4]),GYnum.append(line[5]),GZnum.append(line[6])
-    #Following 9 readings store data.
+    #Set length of arrays
     accel_angle_x_data.append(line[0])
     accel_angle_y_data.append(line[0])
     accel_angle_z_data.append(line[0])
@@ -207,6 +188,11 @@ for line in reader:
     #print(Xnum[1], Ynum[1])  
 
 
+#Initialize the angles
+#For calibration sensor should be motionless on horizantal surface
+#Read that motionless file
+calibrate_sensors(Xnum[i],Ynum[i],Znum[i],GXnum[i],GYnum[i],GZnum[i])
+set_last_read_angle_data(Tnum[i], 0, 0, 0, 0, 0, 0);
 
 
 # Vector scale
@@ -404,7 +390,7 @@ def convertAccelGyro(dt, x,y,z,Gx,Gy,Gz):
     #Update the saved data with the latest values
     set_last_read_angle_data(t_now, angle_x, angle_y, angle_z, unfiltered_gyro_angle_x, unfiltered_gyro_angle_y, unfiltered_gyro_angle_z);
   
-    print(angle_z)
+    #print(angle_z)
 
 
 
