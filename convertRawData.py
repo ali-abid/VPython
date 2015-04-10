@@ -1,7 +1,7 @@
 # Three axis accelerometer data reading
 # Version 1.0 (March. 12, 2015)
 # Abid Ali
-#IMaR Gateway Technology, Institute of Technology
+#IMaR Technology Gateway, Institute of Technology
 
 from __future__ import print_function, division
 from visual import *
@@ -166,7 +166,7 @@ def calibrate_sensors(x,y,z,Gx,Gy,Gz):
     print("Finishing Calibration")
 
 
-RawDataFile = 'C:\Dev\workspace\VPython/golf-1-14-58.txt'
+RawDataFile = 'C:\Dev\workspace\VPython/golf-1-11-4.txt'
 file = open(RawDataFile, 'rU')
 reader = csv.reader(file)
 for line in reader:
@@ -204,7 +204,7 @@ def convertAccelGyro(dt, x,y,z,Gx,Gy,Gz):
     t_now = float(Tnum[i]);
     last_time = float(Tnum[i-1]);
     dt =((t_now - last_time)+3)/100.0; # 40ms
-    print("Sampling rate: ",dt)
+    #print("Sampling rate: ",dt)
     
     #Default Gyro at 250 degrees/second
     # Output scale is 32786/250 = 131
@@ -240,7 +240,7 @@ def convertAccelGyro(dt, x,y,z,Gx,Gy,Gz):
     gyro_angle_x = gyro_x*dt + get_last_x_angle();
     gyro_angle_y = gyro_y*dt + get_last_y_angle();
     gyro_angle_z = gyro_z*dt + get_last_z_angle();
-    print("Delta t",dt,"Gyro z data:",gyro_z, "Last x angle", get_last_z_angle(), "Filtered Gyro Angle: ",gyro_angle_z)
+    #print("Delta t",dt,"Gyro z data:",gyro_z, "Last x angle", get_last_z_angle(), "Filtered Gyro Angle: ",gyro_angle_z)
     #print("Delata T:", dt)
     #print("Filtered Gyro Aanles: gyro x: ",gyro_angle_x, "gyro y: ", gyro_angle_y, "gyro z", gyro_angle_z )
     
@@ -262,7 +262,7 @@ def convertAccelGyro(dt, x,y,z,Gx,Gy,Gz):
     angle_x = alpha*gyro_angle_x + (1.0 - alpha)*accel_angle_x;
     angle_y = alpha*gyro_angle_y + (1.0 - alpha)*accel_angle_y;
     angle_z = gyro_angle_z;     #Accelerometer doesn't give z-angle
-    print("Complementary Filter Angle x: ",angle_x, "y: ",angle_y, "z: ",angle_z )
+    #print("Complementary Filter Angle x: ",angle_x, "y: ",angle_y, "z: ",angle_z )
     
     angle_x_data[i] = angle_x
     angle_y_data[i] = angle_y
@@ -291,7 +291,7 @@ bgcolor=color.black
 #Velocity graph
 vel_graph = gdisplay(x=0, y=200, width=250, height=200, 
              title='Velocity vs. Time', xtitle='t(s)', ytitle='v (m/s)', 
-             xmax=1, xmin=0., ymax=5, ymin=-5, 
+             xmax=1000, xmin=0., ymax=50, ymin=-50, 
              foreground=fgcolor, background=bgcolor)
 velx_Plot = gcurve(color=colory)
 velx_Plot2 = gcurve(color=colorz)
@@ -379,7 +379,12 @@ def posANDacc(x,y,z):
     acc_Plot.plot(pos=(time,mag(ball.acc)))       #Plot Acceleration 
 
 #This method show velocity vector and ball position 
+
+a0 = 0
+vx = 0
 def vectorVelocity(x,y,z):
+    global a0
+    global vx
     t_now = float(Tnum[i]);
     last_time = float(Tnum[i-1]);
     dt =((t_now - last_time)+3)/100.0; # 40ms
@@ -388,7 +393,11 @@ def vectorVelocity(x,y,z):
     r = arrow(pos= ball.pos, axis = ball.vel*vscale, color=color.yellow)
     ball.pos = ball.pos + ball.vel*dt     #Update ball position
     scene.center=ball.pos-vector(0,1,0) #keep ball in view
-
+    a = acc(t_now, ball.pos, ball.vel)  
+    vx += ((mag(a) + a0)/2) * (dt)
+    a0 = mag(a);
+    velx_Plot.plot(pos=(t_now,vx))
+    
 def convertADCtoDecimal(x,y,z):
     Adcx = float(x)
     Adcy = float(y)
@@ -440,10 +449,15 @@ for i in range(len(Xnum)-1):
     #convertADCtoDecimal(Xnum[i],Ynum[i],Znum[i])
     #print("Time: ",Tnum[i],"X: ", Xnum[i],"Y: ",Ynum[i],"Z: ", Znum[i])
     #convertADCtoDecimalStore(Xnum[i],Ynum[i],Znum[i])
-    #vectorVelocity(angle_x_data[i],angle_y_data[i],angle_z_data[i]) # This will show moving vector direction
-    updateVel(angle_x_data[i],angle_y_data[i],angle_z_data[i]) # This will show moving vector direction
+    #vectorVelocity(angle_x_data[i],angle_y_data[i],angle_z_data[i]) # Show moving vector direction
+    #updateVel(angle_x_data[i],angle_y_data[i],angle_z_data[i]) # Calculate Acceleration 
     
     #time = time + dt
+
+Calculate theta
+for i in range(len(angle_x_data)-1):
+    theta = m.atan2(angle_y_data[i],angle_x_data[i])
+    print("line num:",i, "theta: ",theta)
 
 fd = save_file()
 if fd:
