@@ -142,6 +142,15 @@ reader = csv.reader(file)
 for line in reader:
     reader.next() # This function make space in line
     Tnum.append(line[0]),Xnum.append(line[1]),Ynum.append(line[2]),Znum.append(line[3]),GXnum.append(line[4]),GYnum.append(line[5]),GZnum.append(line[6])
-
+    #Set total length of arrays
+    accel_angle_x_data.append(line[0])
+    accel_angle_y_data.append(line[0])
+    accel_angle_z_data.append(line[0])
+    unfiltered_gyro_angle_x_data.append(line[0])
+    unfiltered_gyro_angle_y_data.append(line[0])
+    unfiltered_gyro_angle_z_data.append(line[0])
+    angle_x_data.append(line[0])
+    angle_y_data.append(line[0])
+    angle_z_data.append(line[0])
 
 
