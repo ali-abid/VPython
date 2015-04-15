@@ -233,3 +233,38 @@ def convertAccelGyro(dt, x,y,z,Gx,Gy,Gz):
 
 
 
+
+
+#SAVE PROCESSED DATA INTO TARGET LOCAITON 
+fd = save_file()
+if fd:
+    fd.write("t,x,y,z,Gx,Gy,Gz,FillX,FillY,FillZ")
+    fd.write("\n")
+    for i in range(len(accel_angle_x_data)-1):
+        t_now = float(Tnum[i]);
+        last_time = float(Tnum[i-1]);
+        dt =((t_now - last_time)+3)/100.0; # 40ms
+        fd.write(str(dt))
+        fd.write(",\t")
+        fd.write(str(accel_angle_x_data[i]))
+        fd.write(",\t")
+        fd.write(str(accel_angle_y_data[i]))
+        fd.write(",\t")
+        fd.write(str(accel_angle_z_data[i]))
+        fd.write(",\t")
+        fd.write(str(unfiltered_gyro_angle_x_data[i]))
+        fd.write(",\t")
+        fd.write(str(unfiltered_gyro_angle_y_data[i]))
+        fd.write(",\t")
+        fd.write(str(unfiltered_gyro_angle_z_data[i]))
+        fd.write(",\t")
+        fd.write(str(angle_x_data[i]))
+        fd.write(",\t")
+        fd.write(str(angle_y_data[i]))
+        fd.write(",\t")
+        fd.write(str(angle_z_data[i]))
+        fd.write("\n")
+        
+    fd.close()
+
+file.close()
