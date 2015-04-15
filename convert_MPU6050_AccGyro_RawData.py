@@ -153,4 +153,83 @@ for line in reader:
     angle_y_data.append(line[0])
     angle_z_data.append(line[0])
 
+#CONVERT RADIAN TO DEGREES
+PI = math.pi
+DEG = 180/PI
+
+#CONVERT RAW DATA ACCORDING TO MPU6050 DATA SHEET AND COMBINE ACC & GYRO DATA
+def convertAccelGyro(dt, x,y,z,Gx,Gy,Gz):
+    #Delta Time
+    t_now = float(Tnum[i]);
+    last_time = float(Tnum[i-1]);
+    dt =((t_now - last_time)+3)/100.0; # 40ms
+    #print("Sampling rate: ",dt)
+    
+    #Default Gyro at 250 degrees/second
+    # Output scale is 32786/250 = 131
+    #Convert gyro values to degrees/sec
+    FS_SEL = 131
+    cgx = float(Gx);
+    gyro_x = (cgx-base_x_gyro)/FS_SEL
+    cgy = float(Gy)
+    gyro_y = (cgy-base_y_gyro)/FS_SEL;
+    cgz = float(Gz)
+    gyro_z = (cgz-base_z_gyro)/FS_SEL;
+    #print("Gyro x raw value: ",cgx, "Default base gyro x value: ", base_x_gyro )
+    #print("Convert raw gyro line ",i," to Deg/sec. Gyro x: ",gyro_x)
+
+    #Get raw values
+    #float G_CONVERT = 16384;
+    accel_x = float(x)
+    accel_y = float(y)
+    accel_z = float(z)
+    #print("Accelerometer x: ", accel_x, "y: ", accel_y, "z: ", accel_z, " default +/- 2g");
+    
+    #Get angle values from accelerometer
+    accel_angle_y = atan(-1*accel_x/sqrt(pow(accel_y,2) + pow(accel_z,2)))* DEG;
+    accel_angle_x = atan(accel_y/sqrt(pow(accel_x,2) + pow(accel_z,2)))* DEG;
+    accel_angle_z = 0
+    #print("Accel Angle x: ", accel_angle_x, "y: ", accel_angle_y, "z: ", accel_angle_z)
+    
+    #Store data into arrays for output
+    accel_angle_x_data[i] = accel_angle_x
+    accel_angle_y_data[i] = accel_angle_y
+    accel_angle_z_data[i] = accel_angle_z
+    
+    #Compute the (filtered) gyro angles
+    gyro_angle_x = gyro_x*dt + get_last_x_angle();
+    gyro_angle_y = gyro_y*dt + get_last_y_angle();
+    gyro_angle_z = gyro_z*dt + get_last_z_angle();
+    #print("Delta t",dt,"Gyro z data:",gyro_z, "Last x angle", get_last_z_angle(), "Filtered Gyro Angle: ",gyro_angle_z)
+    #print("Delata T:", dt)
+    #print("Filtered Gyro Aanles: gyro x: ",gyro_angle_x, "gyro y: ", gyro_angle_y, "gyro z", gyro_angle_z )
+    
+    #Compute the drifting gyro angles
+    unfiltered_gyro_angle_x = gyro_x*dt + get_last_gyro_x_angle();
+    unfiltered_gyro_angle_y = gyro_y*dt + get_last_gyro_y_angle();
+    unfiltered_gyro_angle_z = gyro_z*dt + get_last_gyro_z_angle();
+
+    unfiltered_gyro_angle_x_data[i] = unfiltered_gyro_angle_x
+    unfiltered_gyro_angle_y_data[i] = unfiltered_gyro_angle_y
+    unfiltered_gyro_angle_z_data[i] = unfiltered_gyro_angle_z
+    #print("Delata T:", dt)
+    #print("Unfiltered Gyro Aanles: gyro x: ",unfiltered_gyro_angle_x, "gyro y: ", unfiltered_gyro_angle_y, "gyro z", unfiltered_gyro_angle_z )
+
+    
+    #Apply the complementary filter to figure out the change in angle - choice of alpha is
+    #estimated now.  Alpha depends on the sampling rate...
+    alpha = 0.96;
+    angle_x = alpha*gyro_angle_x + (1.0 - alpha)*accel_angle_x;
+    angle_y = alpha*gyro_angle_y + (1.0 - alpha)*accel_angle_y;
+    angle_z = gyro_angle_z;     #Accelerometer doesn't give z-angle
+    print("Complementary Filter Angle x: ",angle_x, "y: ",angle_y, "z: ",angle_z )
+    
+    angle_x_data[i] = angle_x
+    angle_y_data[i] = angle_y
+    angle_z_data[i] = angle_z
+    
+    #Update the saved data with the latest values
+    set_last_read_angle_data(t_now, angle_x, angle_y, angle_z, unfiltered_gyro_angle_x, unfiltered_gyro_angle_y, unfiltered_gyro_angle_z);
+
+
 
