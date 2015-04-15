@@ -16,3 +16,24 @@ import re
 from visual.graph import *
 import time
 from visual.filedialog import save_file
+
+#Declare Arrays
+Tnum = []
+Xnum = []
+Ynum = []
+Znum = []
+
+GXnum = []
+GYnum = []
+GZnum = []
+
+accel_angle_x_data = []
+accel_angle_y_data = []
+accel_angle_z_data = []
+unfiltered_gyro_angle_x_data = []
+unfiltered_gyro_angle_y_data = []
+unfiltered_gyro_angle_z_data = []
+
+angle_x_data = []
+angle_y_data = []
+angle_z_data = []
