@@ -170,11 +170,11 @@ def convertAccelGyro(dt, x,y,z,Gx,Gy,Gz):
     #Convert gyro values to degrees/sec
     FS_SEL = 131
     cgx = float(Gx);
-    gyro_x = (cgx-base_x_gyro)/FS_SEL
+    gyro_x = (cgx-base_x_gyro-base_x_gyro)/FS_SEL
     cgy = float(Gy)
-    gyro_y = (cgy-base_y_gyro)/FS_SEL;
+    gyro_y = (cgy-base_y_gyro-base_y_gyro)/FS_SEL;
     cgz = float(Gz)
-    gyro_z = (cgz-base_z_gyro)/FS_SEL;
+    gyro_z = (cgz-base_z_gyro-base_z_gyro)/FS_SEL;
     #print("Gyro x raw value: ",cgx, "Default base gyro x value: ", base_x_gyro )
     #print("Convert raw gyro line ",i," to Deg/sec. Gyro x: ",gyro_x)
 
@@ -200,6 +200,7 @@ def convertAccelGyro(dt, x,y,z,Gx,Gy,Gz):
     gyro_angle_x = gyro_x*dt + get_last_x_angle();
     gyro_angle_y = gyro_y*dt + get_last_y_angle();
     gyro_angle_z = gyro_z*dt + get_last_z_angle();
+    print("Gyro Angle z : ", gyro_angle_z)
     #print("Delta t",dt,"Gyro z data:",gyro_z, "Last x angle", get_last_z_angle(), "Filtered Gyro Angle: ",gyro_angle_z)
     #print("Delata T:", dt)
     #print("Filtered Gyro Aanles: gyro x: ",gyro_angle_x, "gyro y: ", gyro_angle_y, "gyro z", gyro_angle_z )
@@ -234,7 +235,15 @@ def convertAccelGyro(dt, x,y,z,Gx,Gy,Gz):
 
 #CALL METHOD
 for i in range(len(Xnum)-1):
-    convertAccelGyro(Tnum[i], Xnum[i],Ynum[i],Znum[i],GXnum[i],GYnum[i],GZnum[i])
+    if(i == 0 ):
+        print("\nCablibrate Sensor : ", i+1, " time.\n")
+        #Initialize the angles, for calibration sensor should be motionless on horizantal surface
+        #read that motionless file
+        calibrate_sensors(Xnum[i],Ynum[i],Znum[i],GXnum[i],GYnum[i],GZnum[i])
+        #Reset Variable
+        set_last_read_angle_data(Tnum[i], 0, 0, 0, 0, 0, 0);
+    else:
+        convertAccelGyro(Tnum[i], Xnum[i],Ynum[i],Znum[i],GXnum[i],GYnum[i],GZnum[i])
 
 
 #SAVE PROCESSED DATA INTO TARGET LOCAITON 
