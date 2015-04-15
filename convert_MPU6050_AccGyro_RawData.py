@@ -232,7 +232,9 @@ def convertAccelGyro(dt, x,y,z,Gx,Gy,Gz):
     set_last_read_angle_data(t_now, angle_x, angle_y, angle_z, unfiltered_gyro_angle_x, unfiltered_gyro_angle_y, unfiltered_gyro_angle_z);
 
 
-
+#CALL METHOD
+for i in range(len(Xnum)-1):
+    convertAccelGyro(Tnum[i], Xnum[i],Ynum[i],Znum[i],GXnum[i],GYnum[i],GZnum[i])
 
 
 #SAVE PROCESSED DATA INTO TARGET LOCAITON 
