@@ -37,3 +37,5 @@ unfiltered_gyro_angle_z_data = []
 angle_x_data = []
 angle_y_data = []
 angle_z_data = []
+
+#Define Sensor Calibration Method.
