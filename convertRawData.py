@@ -224,7 +224,8 @@ def convertAccelGyro(dt, x,y,z,Gx,Gy,Gz):
     accel_x = float(x)
     accel_y = float(y)
     accel_z = float(z)
-
+    print("Accelerometer x: ", accel_x, "y: ", accel_y, "z: ", accel_z, " default +/- 2g");
+    
     #Get angle values from accelerometer
     accel_angle_y = atan(-1*accel_x/sqrt(pow(accel_y,2) + pow(accel_z,2)))* DEG;
     accel_angle_x = atan(accel_y/sqrt(pow(accel_x,2) + pow(accel_z,2)))* DEG;
@@ -454,10 +455,10 @@ for i in range(len(Xnum)-1):
     
     #time = time + dt
 
-Calculate theta
+#Calculate theta
 for i in range(len(angle_x_data)-1):
     theta = m.atan2(angle_y_data[i],angle_x_data[i])
-    print("line num:",i, "theta: ",theta)
+    #print("line num:",i, "theta: ",theta)
 
 fd = save_file()
 if fd:
