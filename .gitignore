@@ -7,6 +7,8 @@
 !convert_MPU6050_AccGyro_RawData.py
 *.md
 *.txt
+!golf-1-14-58.txt
+!golf-1-11-4.txt
 
 #/*
 #*.*
