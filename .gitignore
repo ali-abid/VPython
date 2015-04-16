@@ -4,6 +4,7 @@
 
 *.csv
 *.py
+README.md
 #/*
 #*.*
 #!convert_MPU6050_AccGyro_RawData.py
