@@ -3,6 +3,7 @@
 #Ignore all files from DesignPattern folder except src folder
 
 *.csv
+*.py
 #/*
 #*.*
 #!convert_MPU6050_AccGyro_RawData.py
