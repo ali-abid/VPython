@@ -136,7 +136,7 @@ def calibrate_sensors(x,y,z,Gx,Gy,Gz):
 
 
 #READ RAW DATA FILE AND STORE INTO ARRAYS (Tnum, Xnum, Ynum, Znum, GXnum, GYnum, GZnum)
-RawDataFile = 'C:\Dev\workspace\VPython/golf-1-11-4.txt'
+RawDataFile = 'C:\Dev\workspace\VPython/accel.txt'
 file = open(RawDataFile, 'rU')
 reader = csv.reader(file)
 for line in reader:
@@ -170,11 +170,11 @@ def convertAccelGyro(dt, x,y,z,Gx,Gy,Gz):
     #Convert gyro values to degrees/sec
     FS_SEL = 131
     cgx = float(Gx);
-    gyro_x = (cgx-base_x_gyro-base_x_gyro)/FS_SEL
+    gyro_x = (cgx-base_x_gyro)/FS_SEL
     cgy = float(Gy)
-    gyro_y = (cgy-base_y_gyro-base_y_gyro)/FS_SEL;
+    gyro_y = (cgy-base_y_gyro)/FS_SEL;
     cgz = float(Gz)
-    gyro_z = (cgz-base_z_gyro-base_z_gyro)/FS_SEL;
+    gyro_z = (cgz-base_z_gyro)/FS_SEL;
     #print("Gyro x raw value: ",cgx, "Default base gyro x value: ", base_x_gyro )
     #print("Convert raw gyro line ",i," to Deg/sec. Gyro x: ",gyro_x)
 
